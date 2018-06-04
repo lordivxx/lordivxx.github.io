@@ -1,2 +1,0 @@
-# lordivxx.github.io
-webpage
