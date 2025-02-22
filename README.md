@@ -1,125 +1,116 @@
-<!-- Custom CSS Styling Embedded in Markdown -->
+---
+title: "Research Computing Director | [Your Name]"
+author: "[Your Name]"
+layout: default
+---
+
+<!-- Custom CSS for styling -->
 <style>
   body {
+    font-family: 'Arial', sans-serif;
+    background-color: #F5F5DC; /* Beige */
+    color: #002147; /* Dark Blue */
     margin: 0;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #F5F5DC; /* Beige background */
-    color: #002147; /* Dark blue text */
+    padding: 0;
   }
   .header {
-    background: linear-gradient(135deg, #002147, #556B2F); /* Dark blue to army green */
-    color: #fff;
-    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #002147, #556B2F); /* Dark Blue to Army Green */
+    color: white;
     text-align: center;
+    padding: 2rem;
   }
   .nav {
-    background: #556B2F; /* Army green */
-    padding: 0.5rem;
     text-align: center;
+    background-color: #556B2F; /* Army Green */
+    padding: 1rem;
   }
   .nav a {
-    color: #fff;
-    margin: 0 1rem;
+    color: white;
     text-decoration: none;
+    margin: 0 15px;
     font-weight: bold;
   }
+  .section {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+  }
   .hero {
-    padding: 4rem 1rem;
     text-align: center;
-    background: #002147; /* Dark blue */
-    color: #fff;
+    background: #002147;
+    color: white;
+    padding: 3rem;
     border-radius: 8px;
     margin-bottom: 2rem;
   }
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-  }
-  .card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 300px;
-    padding: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 1rem;
-  }
   .footer {
     background: #002147;
-    color: #fff;
+    color: white;
     text-align: center;
     padding: 1rem;
-    margin-top: 2rem;
+    margin-top: 20px;
   }
 </style>
 
-<!-- Header Section -->
+<!-- Header -->
 <div class="header">
   <h1>[Your Name]</h1>
   <p>Research Computing Director | Technology Enthusiast | Outdoor Adventurer</p>
 </div>
 
-<!-- Navigation Bar -->
+<!-- Navigation -->
 <div class="nav">
-  [About Me](#about) • [Research](#research) • [Projects](#projects) • [Blog](#blog) • [Contact](#contact)
+  [About](#about) | [Research](#research) | [Projects](#projects) | [Blog](#blog) | [Contact](#contact)
 </div>
 
 <!-- Hero Section -->
 <div class="hero">
-  <h2>Welcome to My Personal Homepage</h2>
-  <p>Combining cutting-edge research computing with a passion for the outdoors. Explore my work, adventures, and insights.</p>
+  <h2>Welcome to My Homepage</h2>
+  <p>Bridging the gap between high-performance computing, research, and the great outdoors.</p>
 </div>
 
-<!-- About Me Section -->
-## About Me
-I am a **Research Computing Director** at *[Your University Name]*, dedicated to advancing technology and innovation. I blend academic rigor with a lifelong passion for nature, whether it's camping, kayaking, or exploring new terrains.
+## About Me <a id="about"></a>
+I am a **Research Computing Director** at **[Your University Name]**, focused on **high-performance computing, data science, and AI for research applications**. 
 
-<!-- Research & Innovation Section -->
-## Research & Innovation
-My work focuses on developing and optimizing computational methods to tackle complex research challenges. From high-performance computing to data analytics, I strive to bridge the gap between technology and impactful research.
+Beyond technology, I am passionate about the **outdoors**, enjoying **camping, kayaking, and hiking**.
 
-<div class="card-container">
-  <div class="card">
-    ### High-Performance Computing
-    Innovative solutions in scalable computing environments.
-  </div>
-  <div class="card">
-    ### Data Analytics
-    Harnessing data to drive insightful research outcomes.
-  </div>
-  <div class="card">
-    ### Collaborative Projects
-    Working with interdisciplinary teams to push the boundaries of technology.
-  </div>
-</div>
+---
 
-<!-- Projects Section -->
-## Projects & Initiatives
-Explore my latest projects that merge cutting-edge technology with practical applications in research and everyday life:
+## Research & Innovation <a id="research"></a>
+I lead cutting-edge projects in:
 
-- **Smart Campus Initiative:** Implementing innovative solutions to optimize campus computing resources.
-- **Open Science Tools:** Developing open-source software to support collaborative research.
-- **Tech & Nature Retreats:** Combining outdoor adventures with technology workshops.
+- **High-Performance Computing (HPC)** – optimizing large-scale simulations.
+- **Data Analytics** – leveraging AI for scientific research.
+- **Cloud & Edge Computing** – enhancing computational efficiency.
 
-<!-- Blog Section -->
-## From the Blog
-Read my latest thoughts on research computing, technology trends, and outdoor adventures:
+---
 
-- [How High-Performance Computing is Revolutionizing Research](#)
-- [Top 5 Destinations for Outdoor Enthusiasts](#)
-- [Integrating Technology into Nature-Based Experiences](#)
+## Projects <a id="projects"></a>
+Some key initiatives I'm working on:
 
-<!-- Contact Section -->
-## Contact Me
-If you'd like to connect or collaborate, feel free to reach out via email or follow me on social media:
+1. 🚀 **Smart Campus Initiative** – Optimizing computing resources.
+2. 🔬 **Open Science Software** – Developing tools for data-driven research.
+3. 🌲 **Tech & Nature Retreats** – Blending technology with outdoor learning.
 
-- **Email:** [your.email@university.edu](mailto:your.email@university.edu)
-- **LinkedIn:** [Your LinkedIn Profile](#)
-- **Twitter:** [@yourhandle](#)
+---
 
-<!-- Footer Section -->
+## Blog & Insights <a id="blog"></a>
+Here are some of my latest blog posts:
+
+- **[How HPC is Revolutionizing Research](#)**
+- **[Top 5 Destinations for Outdoor Enthusiasts](#)**
+- **[The Intersection of AI and Nature](#)**
+
+---
+
+## Contact <a id="contact"></a>
+📧 Email: [your.email@university.edu](mailto:your.email@university.edu)  
+🔗 LinkedIn: [Your LinkedIn Profile](#)  
+🐦 Twitter: [@yourhandle](#)  
+
+---
+
+<!-- Footer -->
 <div class="footer">
   &copy; 2025 [Your Name] | All Rights Reserved
 </div>
