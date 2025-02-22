@@ -1,3 +1,9 @@
+## Stories
 
-| [  ] ( ) | Eccentric Professor Thistlewick drags her quirky team of dust bunny researchers on a "team-building" hike.  Chaos ensues: poisonous mushrooms, squirrel-tail analysis, and napping. But then, BAM! A majestic, dust-bunny-encrusted stag appears!  From awkward outing to groundbreaking discovery, their research gets a wild, fluffy upgrade in the vibrant redwood forest.
-|
+Below are some stories that are part of this project:
+
+| File | Description |
+| --- | --- |
+| [Story-1.md](./story/Story-1.md) | A captivating tale that introduces the core themes. |
+| [Story-2.md](./story/Story-2.md) | A follow-up story that deepens the narrative and explores new ideas. |
+| [  ] ( ) | |
