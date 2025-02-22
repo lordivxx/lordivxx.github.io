@@ -1,12 +1,3 @@
-# Welcome to My Project!
 
-## Stories
-
-Below are some stories that are part of this project:
-
-| File | Description |
-| --- | --- |
-| [Story-1.md](./story/Story-1.md) | A captivating tale that introduces the core themes. |
-| [Story-2.md](./story/Story-2.md) | A follow-up story that deepens the narrative and explores new ideas. |
-[ Story-2025-02-22-05-23-00.md ]( Story-2025-02-22-05-23-00.md) | A follow-up story that deepens the narrative and explores new ideas. |
-[ ]( ) | A follow-up story that deepens the narrative and explores new ideas. |
+[]( ) |A vibrant expedition up Mount Humdrum turns luminous when a team of eccentric scientists, led by the mischievous Professor Thistlewick, stumbles upon glowing mushrooms!  Dreams of scientific breakthroughs quickly morph into a quest for glow-in-the-dark potpourri, proving that even in the hallowed halls of absurd research, sometimes the silliest discoveries shine the brightest.
+ |
