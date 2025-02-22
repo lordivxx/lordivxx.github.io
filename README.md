@@ -1,2 +1,9 @@
+## Stories
 
-| [  ] ( ) | |Fluorescent pink windbreakers, anxious assistants, and a silent researcher with a hidden talent for polka-dancing with albino squirrels to gramophone music!  A motivational hike turns into a madcap scientific breakthrough involving moss, musical rodents, and the most unexpected team-building exercise ever.
+Below are some stories that are part of this project:
+
+| File | Description |
+| --- | --- |
+| [Story-1.md](./story/Story-1.md) | A captivating tale that introduces the core themes. |
+| [Story-2.md](./story/Story-2.md) | A follow-up story that deepens the narrative and explores new ideas. |
+| [  ] ( ) | |
