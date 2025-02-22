@@ -1,2 +1,8 @@
+## Stories
 
-| [  ] ( ) | |A vibrant pink lab coat clashes with redwood green as the eccentric Professor Thistlewick drags her team of quirky scientists on a "team-building" hike to study dust bunnies.  Chaos ensues (poisonous mushrooms! Squirrel-tail analysis! Napping!), until a majestic, dust-bunny-covered stag transforms their absurd research into a groundbreaking adventure.
+Below are some stories that are part of this project:
+
+| File | Description |
+| --- | --- |
+| [Story-1.md](./story/Story-1.md) | A captivating tale that introduces the core themes. |
+| [Story-2.md](./story/Story-2.md) | A follow-up story that deepens the narrative and explores new ideas. |
