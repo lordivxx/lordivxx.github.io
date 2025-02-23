@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Computing Director - Personal Homepage</title>
+  <style>
+    /* Base styles */
+    body {
+      background-color: #f5f5dc; /* Beige background */
+      color: #1a1a1a;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #4b5320; /* Army green */
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0 0 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    nav li {
+      margin: 0 15px;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    section {
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .section-title {
+      color: #002147; /* Dark blue */
+      margin-bottom: 20px;
+    }
+    .card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #002147;
+    }
+    footer {
+      background-color: #002147;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+    }
+    /* Responsive navigation */
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+      }
+      nav li {
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Research Computing Director</h1>
+    <p>Innovating at the Intersection of Technology and Nature</p>
+    <nav>
+      <ul>
+        <li><a href="#profile">Profile</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#interests">Interests</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Professional Profile Section -->
+  <section id="profile" class="container">
+    <h2 class="section-title">Professional Profile</h2>
+    <div class="card">
+      <h3>About Me</h3>
+      <p>Hello! I am the Research Computing Director at [University Name]. With a passion for cutting-edge technology and the great outdoors, my work bridges advanced computing research with the beauty of nature.</p>
+      <p>I lead a dynamic team dedicated to pioneering research, integrating innovative technologies, and exploring creative solutions in both academia and beyond.</p>
+    </div>
+  </section>
+
+  <!-- Projects & Publications Section -->
+  <section id="projects" class="container">
+    <h2 class="section-title">Projects & Publications</h2>
+    <div class="card">
+      <h3>Latest Projects</h3>
+      <ul>
+        <li><strong>Project A:</strong> A cutting-edge computational research project focused on [Brief Description].</li>
+        <li><strong>Project B:</strong> Innovative data analytics and machine learning integration in research computing.</li>
+        <li><strong>Publication:</strong> <a href="#">"Title of Recent Publication"</a> – Exploring technology integration in academia.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Personal Interests Section -->
+  <section id="interests" class="container">
+    <h2 class="section-title">Personal Interests & Outdoor Adventures</h2>
+    <div class="card">
+      <h3>Embracing the Outdoors</h3>
+      <p>When I'm not immersed in technology, I love exploring the natural world. From camping under the stars to kayaking on serene rivers, outdoor adventures fuel my creativity and balance.</p>
+      <p>My passion for nature inspires a harmonious approach to both my professional and personal life.</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="container">
+    <h2 class="section-title">Get in Touch</h2>
+    <div class="card">
+      <p>If you'd like to connect, discuss innovative projects, or simply chat about outdoor adventures, feel free to reach out at <a href="mailto:email@example.com">email@example.com</a>.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Research Computing Director | All Rights Reserved</p>
+  </footer>
+  
+  <!-- Interactive Feature: Smooth Scrolling -->
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
