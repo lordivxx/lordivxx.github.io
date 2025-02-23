@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Computing Portal</title>
+    <style>
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --background: #f4faf6;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        input, select, button {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        li {
+            padding: 1rem;
+            background: #f8f8f8;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .status-message {
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Research Computing Portal</h1>
+        
+        <section aria-labelledby="researcher-heading">
+            <h2 id="researcher-heading">Researcher Management</h2>
+            <div class="form-group">
+                <input type="text" id="researcherName" placeholder="Researcher Name" required>
+                <input type="text" id="researcherKeywords" placeholder="Research Keywords">
+                <button onclick="addResearcher()">Add Researcher</button>
+            </div>
+            <ul id="researcherList"></ul>
+        </section>
+
+        <section aria-labelledby="project-heading">
+            <h2 id="project-heading">Project Management</h2>
+            <div class="form-group">
+                <input type="text" id="projectName" placeholder="Project Name" required>
+                <button onclick="addProject()">Add Project</button>
+            </div>
+            <ul id="projectList"></ul>
+        </section>
+
+        <section aria-labelledby="compute-heading">
+            <h2 id="compute-heading">Compute Resource Management</h2>
+            <div class="resource-grid">
+                <div>
+                    <h3>Available Clusters</h3>
+                    <ul>
+                        <li>HPCC</li>
+                        <li>ACCESS</li>
+                        <li>Ursa Major</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <select id="computeResources">
+                            <option value="">Select Cluster</option>
+                            <option value="HPCC">HPCC</option>
+                            <option value="ACCESS">ACCESS</option>
+                            <option value="Ursa Major">Ursa Major</option>
+                        </select>
+                        <select id="projectSelect" disabled>
+                            <option value="">Select Project</option>
+                        </select>
+                        <button onclick="allocateResource()">Allocate Resource</button>
+                    </div>
+                    <ul id="resourceList"></ul>
+                </div>
+            </div>
+        </section>
+
+        <div id="statusMessage" class="status-message"></div>
+    </main>
+
+    <script>
+        const state = {
+            researchers: [],
+            projects: [],
+            nextResearcherId: 1,
+            nextProjectId: 1
+        };
+
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = `status-message ${type}`;
+            status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 3000);
+        }
+
+        function addResearcher() {
+            const nameInput = document.getElementById('researcherName');
+            const keywordsInput = document.getElementById('researcherKeywords');
+            const name = nameInput.value.trim();
+            const keywords = keywordsInput.value.trim();
+
+            if (!name) {
+                showStatus('Researcher name is required', 'error');
+                return;
+            }
+
+            state.researchers.push({
+                id: state.nextResearcherId++,
+                name,
+                keywords,
+                projects: []
+            });
+
+            nameInput.value = '';
+            keywordsInput.value = '';
+            updateUI();
+            showStatus('Researcher added successfully');
+        }
+
+        function addProject() {
+            const nameInput = document.getElementById('projectName');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                showStatus('Project name is required', 'error');
+                return;
+            }
+
+            state.projects.push({
+                id: state.nextProjectId++,
+                name,
+                computeResources: []
+            });
+
+            nameInput.value = '';
+            updateUI();
+            showStatus('Project added successfully');
+        }
+
+        function allocateResource() {
+            const clusterSelect = document.getElementById('computeResources');
+            const projectSelect = document.getElementById('projectSelect');
+            const cluster = clusterSelect.value;
+            const projectId = parseInt(projectSelect.value);
+
+            if (!cluster || !projectId) {
+                showStatus('Please select both cluster and project', 'error');
+                return;
+            }
+
+            const project = state.projects.find(p => p.id === projectId);
+            if (project) {
+                project.computeResources.push(cluster);
+                updateUI();
+                showStatus(`Allocated ${cluster} to ${project.name}`);
+            }
+        }
+
+        function updateUI() {
+            updateResearcherList();
+            updateProjectList();
+            updateResourceAllocation();
+            updateProjectSelect();
+        }
+
+        function updateResearcherList() {
+            const list = document.getElementById('researcherList');
+            list.innerHTML = state.researchers.map(researcher => `
+                <li>
+                    <div>
+                        <strong>${researcher.name}</strong><br>
+                        ${researcher.keywords && `<em>Keywords: ${researcher.keywords}</em>`}
+                        ${researcher.projects.length ? `<br>Projects: ${researcher.projects.join(', ')}` : ''}
+                    </div>
+                    ${state.projects.length ? `
+                    <div class="form-group">
+                        <select onchange="assignProject(${researcher.id}, this.value)">
+                            <option value="">Assign to project</option>
+                            ${state.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                        </select>
+                    </div>` : ''}
+                </li>
+            `).join('');
+        }
+
+        function assignProject(researcherId, projectId) {
+            const researcher = state.researchers.find(r => r.id === researcherId);
+            const project = state.projects.find(p => p.id === parseInt(projectId));
+            
+            if (researcher && project) {
+                if (!researcher.projects.includes(project.name)) {
+                    researcher.projects.push(project.name);
+                    updateUI();
+                    showStatus(`Assigned ${project.name} to ${researcher.name}`);
+                }
+            }
+        }
+
+        function updateProjectList() {
+            const list = document.getElementById('projectList');
+            list.innerHTML = state.projects.map(project => `
+                <li>
+                    <div>
+                        <strong>${project.name}</strong>
+                        ${project.computeResources.length ? `<br>Resources: ${project.computeResources.join(', ')}` : ''}
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function updateProjectSelect() {
+            const select = document.getElementById('projectSelect');
+            select.innerHTML = `
+                <option value="">Select Project</option>
+                ${state.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+            `;
+            select.disabled = state.projects.length === 0;
+        }
+
+        function updateResourceAllocation() {
+            const list = document.getElementById('resourceList');
+            const allocations = state.projects.flatMap(p => 
+                p.computeResources.map(r => ({ project: p.name, resource: r }))
+            );
+            
+            list.innerHTML = allocations.map(a => `
+                <li>${a.project} → ${a.resource}</li>
+            `).join('');
+        }
+
+        // Initialize project select
+        updateProjectSelect();
+    </script>
+</body>
+</html>
