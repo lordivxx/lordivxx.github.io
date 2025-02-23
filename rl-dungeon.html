@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon Hero - Reinforcement Learning</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: auto;
+        }
+        #chartContainer {
+            width: 500px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Dungeon Hero - Reinforcement Learning</h1>
+    <canvas id="mazeCanvas" width="500" height="500"></canvas>
+    <div id="chartContainer">
+        <canvas id="learningChart"></canvas>
+    </div>
+    <script>
+        class DungeonHero {
+            constructor(rows, cols) {
+                this.rows = rows;
+                this.cols = cols;
+                // Generate the dungeon
+                this.dungeon = this.generateDungeon();
+
+                // Hero and boss positions
+                this.hero = { x: 3, y: 3 };
+                this.boss = { x: cols - 4, y: rows - 4 };
+
+                // Q-Learning settings
+                this.qTable = {}; // state -> { up: number, down: number, left: number, right: number }
+                this.learningRate = 0.1;  // alpha
+                this.discountFactor = 0.9; // gamma
+                this.epsilon = 0.2;        // exploration rate
+
+                // Tracking steps & episodes
+                this.actions = ["up", "down", "left", "right"];
+                this.stepsPerEpisode = [];
+                this.currentSteps = 0;
+                this.episode = 0;
+
+                // Set up chart & start
+                this.setupChart();
+                this.drawDungeon();
+                setTimeout(() => this.moveHero(), 20);
+            }
+
+            setupChart() {
+                const ctx = document.getElementById("learningChart").getContext("2d");
+                this.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Steps per Episode',
+                            data: [],
+                            borderColor: 'blue',
+                            borderWidth: 2,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Episode' }
+                            },
+                            y: {
+                                title: { display: true, text: 'Steps' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            updateChart() {
+                // Push the current episode & step count into the chart
+                this.chart.data.labels.push(this.episode);
+                this.chart.data.datasets[0].data.push(this.currentSteps);
+                this.chart.update();
+            }
+
+            generateDungeon() {
+                // Build a grid full of walls, then carve rooms & hallways
+                let dungeon = Array.from({ length: this.rows }, () => Array(this.cols).fill(1));
+                let rooms = [
+                    { x: 2, y: 2, width: 6, height: 6 },
+                    { x: 10, y: 2, width: 6, height: 6 },
+                    { x: 10, y: 10, width: 6, height: 6 },
+                    { x: 18, y: 10, width: 6, height: 6 },
+                    { x: this.cols - 8, y: this.rows - 8, width: 6, height: 6 }
+                ];
+                // Carve out rooms
+                rooms.forEach(room => {
+                    for (let i = 0; i < room.height; i++) {
+                        for (let j = 0; j < room.width; j++) {
+                            dungeon[room.y + i][room.x + j] = 0;
+                        }
+                    }
+                });
+                // Carve hallways
+                this.createHallway(dungeon, 7, 5, 10, 5);
+                this.createHallway(dungeon, 13, 7, 13, 10);
+                this.createHallway(dungeon, 15, 14, 18, 14);
+                this.createHallway(dungeon, 21, 14, 21, 18);
+                return dungeon;
+            }
+
+            createHallway(dungeon, x1, y1, x2, y2) {
+                let x = x1, y = y1;
+                while (x !== x2 || y !== y2) {
+                    dungeon[y][x] = 0;
+                    if (x < x2) x++;
+                    else if (x > x2) x--;
+                    if (y < y2) y++;
+                    else if (y > y2) y--;
+                }
+            }
+
+            // Convert hero's current position to a string state
+            getState() {
+                return `${this.hero.x},${this.hero.y}`;
+            }
+
+            // Reward function for each move
+            getReward(newX, newY) {
+                // If we reached the boss, big reward
+                if (newX === this.boss.x && newY === this.boss.y) {
+                    return 100;
+                }
+                // Otherwise small penalty per step to encourage efficiency
+                return -1;
+            }
+
+            // Q-Learning update
+            updateQTable(state, action, reward, nextState) {
+                // Ensure states exist in qTable
+                if (!this.qTable[state]) {
+                    this.qTable[state] = { up: 0, down: 0, left: 0, right: 0 };
+                }
+                if (!this.qTable[nextState]) {
+                    this.qTable[nextState] = { up: 0, down: 0, left: 0, right: 0 };
+                }
+                let oldVal = this.qTable[state][action];
+                let nextMax = Math.max(...Object.values(this.qTable[nextState]));
+                // Q-learning formula
+                let newVal = oldVal + this.learningRate * (reward + this.discountFactor * nextMax - oldVal);
+                this.qTable[state][action] = newVal;
+            }
+
+            // Epsilon-greedy policy
+            chooseAction(state) {
+                // Ensure the state is in qTable
+                if (!this.qTable[state]) {
+                    this.qTable[state] = { up: 0, down: 0, left: 0, right: 0 };
+                }
+                // Explore or exploit?
+                if (Math.random() < this.epsilon) {
+                    // Explore randomly
+                    return this.actions[Math.floor(Math.random() * this.actions.length)];
+                } else {
+                    // Exploit best Q-value
+                    let bestAction = "up";
+                    let bestVal = this.qTable[state].up;
+                    for (let act of this.actions) {
+                        if (this.qTable[state][act] > bestVal) {
+                            bestVal = this.qTable[state][act];
+                            bestAction = act;
+                        }
+                    }
+                    return bestAction;
+                }
+            }
+
+            moveHero() {
+                this.currentSteps++;
+
+                // 1) Record old state & pick an action
+                let state = this.getState();
+                let action = this.chooseAction(state);
+
+                // 2) Move hero based on action
+                let newX = this.hero.x;
+                let newY = this.hero.y;
+                if (action === "up" && this.hero.y > 0 && this.dungeon[this.hero.y - 1][this.hero.x] === 0) newY--;
+                if (action === "down" && this.hero.y < this.rows - 1 && this.dungeon[this.hero.y + 1][this.hero.x] === 0) newY++;
+                if (action === "left" && this.hero.x > 0 && this.dungeon[this.hero.y][this.hero.x - 1] === 0) newX--;
+                if (action === "right" && this.hero.x < this.cols - 1 && this.dungeon[this.hero.y][this.hero.x + 1] === 0) newX++;
+
+                // 3) Get reward & define next state
+                let reward = this.getReward(newX, newY);
+                let nextState = `${newX},${newY}`;
+
+                // 4) Update Q-table
+                this.updateQTable(state, action, reward, nextState);
+
+                // 5) Update hero position & redraw
+                this.hero = { x: newX, y: newY };
+                this.drawDungeon();
+
+                // 6) Check if we reached the boss
+                if (newX === this.boss.x && newY === this.boss.y) {
+                    // End of episode
+                    this.stepsPerEpisode.push(this.currentSteps);
+                    this.episode++;
+                    this.updateChart();
+                    this.resetHero();
+                } else {
+                    setTimeout(() => this.moveHero(), 20);
+                }
+            }
+
+            resetHero() {
+                this.currentSteps = 0;
+                this.hero = { x: 3, y: 3 };
+                this.drawDungeon();
+                setTimeout(() => this.moveHero(), 100);
+            }
+
+            drawDungeon() {
+                const canvas = document.getElementById("mazeCanvas");
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, 500, 500);
+                let cellSize = 500 / this.rows;
+                for (let i = 0; i < this.rows; i++) {
+                    for (let j = 0; j < this.cols; j++) {
+                        ctx.fillStyle = this.dungeon[i][j] === 1 ? "black" : "white";
+                        ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
+                    }
+                }
+                ctx.fillStyle = "red";
+                ctx.fillRect(this.boss.x * cellSize, this.boss.y * cellSize, cellSize, cellSize);
+                ctx.fillStyle = "blue";
+                ctx.fillRect(this.hero.x * cellSize, this.hero.y * cellSize, cellSize, cellSize);
+            }
+
+            // Create connecting corridors
+            createHallway(dungeon, x1, y1, x2, y2) {
+                let x = x1;
+                let y = y1;
+                while (x !== x2 || y !== y2) {
+                    dungeon[y][x] = 0;
+                    if (x < x2) x++;
+                    else if (x > x2) x--;
+                    if (y < y2) y++;
+                    else if (y > y2) y--;
+                }
+            }
+        }
+
+        // Instantiate & start
+        const dungeonGame = new DungeonHero(25, 25);
+    </script>
+</body>
+</html>
+
