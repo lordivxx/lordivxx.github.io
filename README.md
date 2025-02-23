@@ -1,7 +1,7 @@
 
 ## Stories
 
-Below are some stories that are part of this project:
+Below are some stories that are part of this project:  
 
 | File | Description |
 | ------------------------ | --- |
