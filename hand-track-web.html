@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hand Tracking Web App</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #canvas { position: absolute; }
+        #video { transform: scaleX(-1); }
+        .container { 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <video id="video" width="1280" height="720" autoplay></video>
+        <canvas id="canvas" width="1280" height="720"></canvas>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const hands = new Hands({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+});
+
+hands.setOptions({
+    maxNumHands: 2,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.7,
+    minTrackingConfidence: 0.7
+});
+
+const camera = new Camera(video, {
+    onFrame: async () => {
+        await hands.send({image: video});
+    },
+    width: 1280,
+    height: 720
+});
+
+hands.onResults((results) => {
+    ctx.save();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+    
+    if (results.multiHandLandmarks) {
+        for (const landmarks of results.multiHandLandmarks) {
+            drawConnectors(ctx, landmarks, HAND_CONNECTIONS, {
+                color: '#00FF00',
+                lineWidth: 2
+            });
+            drawLandmarks(ctx, landmarks, {
+                color: '#000000',
+                lineWidth: 0
+            });
+        }
+    }
+    ctx.restore();
+});
+
+camera.start();
+</script>
+</body>
+</html>
