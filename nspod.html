@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Picture of the Day</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.3);
+        }
+
+        h1 {
+            color: #0ef;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        #apod-image {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 15px;
+            box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
+        }
+
+        iframe {
+            width: 100%;
+            height: 350px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        #apod-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #ffcc00;
+        }
+
+        #apod-date {
+            font-size: 14px;
+            color: #bbb;
+            margin-bottom: 10px;
+        }
+
+        #apod-description {
+            font-size: 16px;
+            margin-top: 15px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #0ef;
+            color: #121212;
+            text-decoration: none;
+            transition: 0.3s ease;
+            box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .button:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>NASA Picture of the Day</h1>
+        <p id="apod-date"></p>
+        <h2 id="apod-title"></h2>
+        <div id="media-container"></div>
+        <p id="apod-description"></p>
+        <a id="full-image-link" class="button" target="_blank">View Full Image</a>
+    </div>
+
+    <script>
+        const NASA_API_KEY = 'DEMO_KEY'; // Replace with your own NASA API key for more requests
+        const APOD_URL = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`;
+
+        async function fetchAPOD() {
+            try {
+                const response = await fetch(APOD_URL);
+                const data = await response.json();
+
+                document.getElementById("apod-title").innerText = data.title;
+                document.getElementById("apod-date").innerText = `📅 ${data.date}`;
+                document.getElementById("apod-description").innerText = data.explanation;
+
+                const mediaContainer = document.getElementById("media-container");
+                mediaContainer.innerHTML = ""; // Clear previous content
+
+                if (data.media_type === "image") {
+                    const imgElement = document.createElement("img");
+                    imgElement.src = data.url;
+                    imgElement.id = "apod-image";
+                    imgElement.alt = "NASA Astronomy Picture of the Day";
+                    mediaContainer.appendChild(imgElement);
+                } else if (data.media_type === "video") {
+                    const videoElement = document.createElement("iframe");
+                    videoElement.src = data.url;
+                    videoElement.allowFullscreen = true;
+                    mediaContainer.appendChild(videoElement);
+                }
+
+                document.getElementById("full-image-link").href = data.hdurl || data.url;
+
+            } catch (error) {
+                console.error("Error fetching APOD:", error);
+                document.getElementById("apod-title").innerText = "Failed to load NASA APOD";
+                document.getElementById("apod-description").innerText = "An error occurred while fetching the image.";
+            }
+        }
+
+        fetchAPOD();
+    </script>
+
+</body>
+</html>
