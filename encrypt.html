@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Encryptor & Decryptor</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.3);
+        }
+
+        h1 {
+            color: #0ef;
+        }
+
+        textarea {
+            width: 90%;
+            height: 100px;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            background: #282828;
+            color: #0ef;
+            resize: none;
+            outline: none;
+            transition: 0.3s ease-in-out;
+        }
+
+        textarea:focus {
+            box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .encrypt {
+            background: #0a9396;
+            color: #ffffff;
+        }
+
+        .decrypt {
+            background: #94d2bd;
+            color: #121212;
+        }
+
+        .copy {
+            background: #2a9d8f; /* Updated to a teal-green shade */
+            color: #ffffff;
+        }
+
+        .clear {
+            background: #005f73;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Text Encryptor & Decryptor</h1>
+        <textarea id="inputText" placeholder="Enter text to encrypt/decrypt..."></textarea>
+        
+        <div class="buttons">
+            <button class="encrypt" onclick="encryptText()">Encrypt</button>
+            <button class="decrypt" onclick="decryptText()">Decrypt</button>
+            <button class="copy" onclick="copyText('inputText')">Copy Input</button>
+            <button class="clear" onclick="clearText()">Clear</button>
+        </div>
+
+        <textarea id="outputText" placeholder="Result will appear here..." readonly></textarea>
+        <button class="copy" onclick="copyText('outputText')">Copy Output</button>
+    </div>
+
+    <script>
+        function caesarCipher(str, shift) {
+            return str
+                .split('')
+                .map(char => {
+                    if (char.match(/[a-z]/i)) {
+                        let code = char.charCodeAt(0);
+                        let offset = char.toUpperCase() === char ? 65 : 97;
+                        return String.fromCharCode(((code - offset + shift) % 26 + 26) % 26 + offset);
+                    }
+                    return char;
+                })
+                .join('');
+        }
+
+        function encryptText() {
+            let text = document.getElementById("inputText").value;
+            let encrypted = caesarCipher(text, 5); // Shift by 5 for fun
+            document.getElementById("outputText").value = encrypted;
+        }
+
+        function decryptText() {
+            let text = document.getElementById("inputText").value;
+            let decrypted = caesarCipher(text, -5); // Reverse shift
+            document.getElementById("outputText").value = decrypted;
+        }
+
+        function copyText(elementId) {
+            let textArea = document.getElementById(elementId);
+            textArea.select();
+            document.execCommand("copy");
+        }
+
+        function clearText() {
+            document.getElementById("inputText").value = "";
+            document.getElementById("outputText").value = "";
+        }
+    </script>
+
+</body>
+</html>
