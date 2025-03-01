@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trailblazer - Interactive Hiking & Camping Map</title>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="https://unpkg.com/leaflet-elevation/dist/Leaflet.Elevation-0.0.4.min.js"></script>
+    <script src="https://unpkg.com/leaflet-gpx/gpx.js"></script>
+    <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { width: 100vw; height: 100vh; }
+        #elevation { height: 150px; }
+        .dark-mode { filter: invert(1) hue-rotate(180deg); }
+        #toggle-dark-mode { position: absolute; top: 10px; left: 10px; z-index: 1000; background: white; padding: 5px; cursor: pointer; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div id="toggle-dark-mode">🌙 Toggle Dark Mode</div>
+    <div id="map"></div>
+    <div id="elevation"></div>
+    <script>
+        // Initialize the map with a default view
+        const map = L.map('map').setView([47.7511, -120.7401], 10);
+
+        // Tile layers for light and dark mode
+        const lightMode = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.opentopomap.org/">OpenTopoMap</a> contributors'
+        });
+        
+        const darkMode = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://carto.com/">CartoDB</a> contributors'
+        });
+        
+        lightMode.addTo(map);
+        
+        let isDarkMode = false;
+        document.getElementById('toggle-dark-mode').addEventListener('click', function() {
+            if (isDarkMode) {
+                map.removeLayer(darkMode);
+                lightMode.addTo(map);
+            } else {
+                map.removeLayer(lightMode);
+                darkMode.addTo(map);
+            }
+            isDarkMode = !isDarkMode;
+        });
+
+        // Add Geocoder (Search Bar)
+        L.Control.geocoder({
+            defaultMarkGeocode: false
+        }).on('markgeocode', function(e) {
+            map.setView(e.geocode.center, 12);
+        }).addTo(map);
+
+        // Function to get and set user location dynamically
+        function locateUser() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    map.setView([userLat, userLng], 13);
+                    L.marker([userLat, userLng]).addTo(map)
+                        .bindPopup('<h3>Your Location</h3><p>You are here!</p>').openPopup();
+                }, error => {
+                    console.error("Error getting location:", error);
+                });
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+        
+        // Call the locate function on load
+        locateUser();
+        
+        // Allow user to add custom markers with custom icons
+        const customIcons = {
+            tent: L.icon({ iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png', iconSize: [32, 32] }),
+            fire: L.icon({ iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png', iconSize: [32, 32] })
+        };
+        
+        map.on('click', function(e) {
+            let type = prompt("Enter marker type: tent or fire");
+            if (type === 'tent' || type === 'fire') {
+                L.marker(e.latlng, { icon: customIcons[type] }).addTo(map)
+                    .bindPopup(`<h3>${type.charAt(0).toUpperCase() + type.slice(1)} Marker</h3><p>Added by user</p>`)
+                    .openPopup();
+            }
+        });
+
+        // Add Distance Measurement Tool
+        L.control.measure({
+            primaryLengthUnit: "kilometers",
+            secondaryLengthUnit: "meters",
+            primaryAreaUnit: "sqmeters",
+            activeColor: "#ff0000",
+            completedColor: "#00ff00"
+        }).addTo(map);
+
+        // Load a sample GPX hiking trail with elevation profile
+        const elevationControl = L.control.elevation({
+            position: "bottomright",
+            theme: "steelblue-theme",
+            width: 600,
+            height: 150
+        }).addTo(map);
+
+        const gpxLayer = new L.GPX('https://raw.githubusercontent.com/mpetazzoni/leaflet-gpx/master/gpx/denver.gpx', {
+            async: true,
+            marker_options: {
+                startIconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png',
+                endIconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
+                shadowUrl: 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png'
+            }
+        }).on('loaded', function(e) {
+            map.fitBounds(e.target.getBounds());
+        }).on('addline', function(e) {
+            elevationControl.addData(e.line);
+        }).addTo(map);
+    </script>
+</body>
+</html>
