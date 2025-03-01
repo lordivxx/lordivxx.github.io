@@ -82,13 +82,14 @@
             opacity: 0.8;
             transform: scale(1.05);
         }
-
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>NASA Picture of the Day</h1>
+        <input type="date" id="date-picker" max="2025-12-31" />
+        <button class="button" onclick="fetchAPOD()">Get Image</button>
         <p id="apod-date"></p>
         <h2 id="apod-title"></h2>
         <div id="media-container"></div>
@@ -97,10 +98,12 @@
     </div>
 
     <script>
-        const NASA_API_KEY = 'DEMO_KEY'; // Replace with your own NASA API key for more requests
-        const APOD_URL = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`;
+        const NASA_API_KEY = 'DEMO_KEY'; // Replace with your own NASA API key
 
-        async function fetchAPOD() {
+        async function fetchAPOD(date = '') {
+            const selectedDate = date || document.getElementById("date-picker").value;
+            const APOD_URL = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}&date=${selectedDate}`;
+            
             try {
                 const response = await fetch(APOD_URL);
                 const data = await response.json();
@@ -110,7 +113,7 @@
                 document.getElementById("apod-description").innerText = data.explanation;
 
                 const mediaContainer = document.getElementById("media-container");
-                mediaContainer.innerHTML = ""; // Clear previous content
+                mediaContainer.innerHTML = "";
 
                 if (data.media_type === "image") {
                     const imgElement = document.createElement("img");
@@ -126,7 +129,6 @@
                 }
 
                 document.getElementById("full-image-link").href = data.hdurl || data.url;
-
             } catch (error) {
                 console.error("Error fetching APOD:", error);
                 document.getElementById("apod-title").innerText = "Failed to load NASA APOD";
@@ -134,7 +136,11 @@
             }
         }
 
-        fetchAPOD();
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById("date-picker").value = today;
+            fetchAPOD(today);
+        });
     </script>
 
 </body>
