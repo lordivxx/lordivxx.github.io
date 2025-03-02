@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,7 +31,8 @@
             border-radius: 12px;
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             color: var(--primary-color);
             margin-bottom: 1.5rem;
         }
@@ -49,7 +51,9 @@
             gap: 0.5rem;
         }
 
-        input, select, button {
+        input,
+        select,
+        button {
             padding: 0.75rem;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -110,6 +114,7 @@
         }
     </style>
 </head>
+
 <body>
     <main class="container">
         <h1>Research Computing Portal</h1>
@@ -166,23 +171,19 @@
     </main>
 
     <script>
-        const state = {
+        const localStorageKey = 'researchPortalState';
+
+        // Load state from local storage
+        let state = JSON.parse(localStorage.getItem(localStorageKey)) || {
             researchers: [],
             projects: [],
             nextResearcherId: 1,
             nextProjectId: 1
         };
 
-        function loadState() {
-            const savedState = localStorage.getItem('researchComputingPortalState');
-            if (savedState) {
-                return JSON.parse(savedState);
-            }
-            return state;
-        }
-
+        // Function to save state to local storage
         function saveState() {
-            localStorage.setItem('researchComputingPortalState', JSON.stringify(state));
+            localStorage.setItem(localStorageKey, JSON.stringify(state));
         }
 
         function showStatus(message, type = 'success') {
@@ -214,8 +215,15 @@
             nameInput.value = '';
             keywordsInput.value = '';
             updateUI();
-            saveState();
             showStatus('Researcher added successfully');
+            saveState(); // Save state after modification
+        }
+
+        function removeResearcher(id) {
+            state.researchers = state.researchers.filter(researcher => researcher.id !== id);
+            updateUI();
+            showStatus('Researcher removed successfully');
+            saveState();
         }
 
         function addProject() {
@@ -235,8 +243,15 @@
 
             nameInput.value = '';
             updateUI();
-            saveState();
             showStatus('Project added successfully');
+            saveState(); // Save state after modification
+        }
+
+        function removeProject(id) {
+            state.projects = state.projects.filter(project => project.id !== id);
+            updateUI();
+            showStatus('Project removed successfully');
+            saveState();
         }
 
         function allocateResource() {
@@ -254,9 +269,9 @@
             if (project) {
                 project.computeResources.push(cluster);
                 updateUI();
-                saveState();
                 showStatus(`Allocated ${cluster} to ${project.name}`);
             }
+            saveState(); // Save state after modification
         }
 
         function updateUI() {
@@ -272,7 +287,7 @@
                 `<li>
                     <div>
                         <strong>${researcher.name}</strong><br>
-                        ${researcher.keywords && `<em>Keywords: ${researcher.keywords}</em>`}
+                        ${researcher.keywords ? `<em>Keywords: ${researcher.keywords}</em>` : ''}
                         ${researcher.projects.length ? `<br>Projects: ${researcher.projects.join(', ')}` : ''}
                     </div>
                     ${state.projects.length ?
@@ -282,6 +297,7 @@
                             ${state.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
                         </select>
                     </div>` : ''}
+                    <button onclick="removeResearcher(${researcher.id})">Remove</button>
                 </li>`
             ).join('');
         }
@@ -294,8 +310,8 @@
                 if (!researcher.projects.includes(project.name)) {
                     researcher.projects.push(project.name);
                     updateUI();
-                    saveState();
                     showStatus(`Assigned ${project.name} to ${researcher.name}`);
+                    saveState(); // Save state after modification
                 }
             }
         }
@@ -308,6 +324,7 @@
                         <strong>${project.name}</strong>
                         ${project.computeResources.length ? `<br>Resources: ${project.computeResources.join(', ')}` : ''}
                     </div>
+                    <button onclick="removeProject(${project.id})">Remove</button>
                 </li>`
             ).join('');
         }
@@ -316,7 +333,8 @@
             const select = document.getElementById('projectSelect');
             select.innerHTML =
                 `<option value="">Select Project</option>
-                ${state.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}`;
+                ${state.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+            `;
             select.disabled = state.projects.length === 0;
         }
 
@@ -331,10 +349,10 @@
             ).join('');
         }
 
-        // Initialize state and UI
-        Object.assign(state, loadState());
+        // Initialize project select and UI
+        updateProjectSelect();
         updateUI();
     </script>
 </body>
-</html>
 
+</html>
