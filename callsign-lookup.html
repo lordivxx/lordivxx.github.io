@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callsign Lookup</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #121212;
+            color: #ddd;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            width: 90%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #00e5ff;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 4px 0 0 4px;
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+        .input-group button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #00bcd4;
+            color: #fff;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        .input-group button:hover {
+            background-color: #0097a7;
+        }
+        .output {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .output a {
+            color: #00e5ff;
+        }
+        .error {
+            color: #ff5252;
+        }
+    </style>
+    <title>Callsign Lookup</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Callsign Lookup</h1>
+        <div class="input-group">
+            <input type="text" id="callsign" placeholder="Enter callsign">
+            <button onclick="lookupCallsign()">Search</button>
+        </div>
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        function lookupCallsign() {
+            const callsign = document.getElementById('callsign').value.trim().toUpperCase();
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            if (!callsign) {
+                output.innerHTML = '<p class="error">Please enter a callsign.</p>';
+                return;
+            }
+
+            fetch(`https://callook.info/${callsign}/json`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'VALID') {
+                        output.innerHTML = `<p class="error">Invalid or updating callsign.</p>`;
+                        return;
+                    }
+
+                    const { type, current, trustee, name, address, location, otherInfo } = data;
+                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
+
+                    output.innerHTML = `
+                        <h2>Callsign Information</h2>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <p><strong>Type:</strong> ${type}</p>
+                        <h3>Current Callsign:</h3>
+                        <p>${current.callsign} ${current.operClass ? `(${current.operClass})` : ''}</p>
+                        ${trustee.callsign ? `<h3>Trustee:</h3><p>${trustee.name} [${trustee.callsign}]</p>` : ''}
+                        <h3>Name and Address:</h3>
+                        <p>${name}</p>
+                        <p>${address.line1}</p>
+                        <p>${address.line2}</p>
+                        ${address.attn ? `<p>ATTN: ${address.attn}</p>` : ''}
+                        <h3>Location:</h3>
+                        <p>Latitude: ${location.latitude}</p>
+                        <p>Longitude: ${location.longitude}</p>
+                        <p>Grid Square: ${location.gridsquare}</p>
+                        <p><a href="https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}" target="_blank">View on Google Maps</a></p>
+                        <h3>Other Information:</h3>
+                        <p>Grant Date: ${otherInfo.grantDate}</p>
+                        <p>Expiry Date: ${otherInfo.expiryDate}</p>
+                        <p>Last Action Date: ${otherInfo.lastActionDate}</p>
+                        <p>FRN: ${otherInfo.frn}</p>
+                        <p><a href="${otherInfo.ulsUrl}" target="_blank">View License on ULS</a></p>
+                    `;
+                })
+                .catch(err => {
+                    output.innerHTML = `<p class="error">Error fetching data.</p>`;
+                });
+        }
+    </script>
+    <div class="output" id="output"></div>
+</body>
+</html>
