@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Dodge Game (Mute Button)</title>
+    <style>
+        /* Basic styling */
+        body { margin: 0; overflow: hidden; font-family: 'Arial', sans-serif; background-color: #e9e9e9; display: flex; justify-content: center; align-items: center; min-height: 100vh; flex-direction: column; position: relative; }
+        canvas { display: block; background-color: #050505; width: 90vw; max-width: 900px; height: 65vh; max-height: 650px; border-radius: 8px; box-shadow: 0 6px 12px rgba(0,0,0,0.2); margin-top: 100px; /* Increased margin for expanded UI */ }
+
+        /* UI Container */
+        #ui-container { position: absolute; top: 5px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; flex-wrap: wrap; gap: 5px 10px; /* Row and column gap */ justify-content: center; align-items: center; background-color: rgba(240, 240, 240, 0.9); padding: 8px 10px; border-radius: 5px; width: 95%; max-width: 880px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+        /* UI Elements */
+        .ui-group { display: flex; align-items: center; gap: 5px; background-color: #fff; padding: 3px 6px; border-radius: 4px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+        .ui-text { color: #333; font-size: 11px; white-space: nowrap; margin: 0; padding: 0; }
+        .ui-value { font-weight: bold; color: #0056b3; } /* Make values stand out */
+
+        /* Buttons */
+        .control-button { padding: 5px 10px; font-size: 11px; cursor: pointer; border: none; border-radius: 5px; color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: background-color 0.2s ease; margin: 2px; flex-shrink: 0; } /* Prevent shrinking */
+        #aiButton { background-color: #007bff; } #aiButton:hover { background-color: #0056b3; } #aiButton.active { background-color: #dc3545; } #aiButton.active:hover { background-color: #c82333; }
+        #fastTrainButton { background-color: #ffc107; color: #333; } #fastTrainButton:hover { background-color: #e0a800; } #fastTrainButton.active { background-color: #17a2b8; color: white; } #fastTrainButton.active:hover { background-color: #138496; }
+        #saveButton { background-color: #28a745; } #saveButton:hover { background-color: #218838; }
+        #loadButton { background-color: #6c757d; } #loadButton:hover { background-color: #5a6268; }
+        #resetProgressButton { background-color: #f56042; } #resetProgressButton:hover { background-color: #d9534f; }
+        #muteButton { background-color: #fd7e14; } /* Orange for mute */ #muteButton:hover { background-color: #e66a0a; }
+        #muteButton.muted { background-color: #adb5bd; color: #495057; } /* Greyed out when muted */ #muteButton.muted:hover { background-color: #9a9fa5; }
+
+
+        /* Hyperparameter Controls */
+        .hyperparam-group { display: flex; flex-direction: column; align-items: flex-start; background-color: #fff; padding: 4px 8px; border-radius: 4px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+        .hyperparam-group label { font-size: 10px; color: #555; margin-bottom: 2px; display: flex; justify-content: space-between; width: 100%; }
+        .hyperparam-group input[type="range"] { width: 80px; height: 5px; cursor: pointer; }
+        .hyperparam-group .value-display { font-size: 10px; font-weight: bold; color: #333; }
+
+        /* Game Over Message */
+        #gameOver { /* ... unchanged ... */ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ffc107; font-size: 40px; font-weight: bold; text-shadow: 2px 2px 4px black; z-index: 11; display: none; text-align: center; background-color: rgba(0, 0, 0, 0.75); padding: 25px; border-radius: 10px; border: 2px solid #ffc107; }
+        #gameOver button { /* ... unchanged ... */ margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; background-color: #28a745; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: background-color 0.3s ease; }
+        #gameOver button:hover { /* ... unchanged ... */ background-color: #218838; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+
+    <div id="ui-container">
+        <div class="ui-group"><span class="ui-text">Score:</span><span id="score" class="ui-value">0</span></div>
+        <div class="ui-group"><span class="ui-text">Top Score:</span><span id="topScore" class="ui-value">0</span></div>
+        <div class="ui-group"><span class="ui-text">Episode:</span><span id="episode" class="ui-value">0</span></div>
+        <div class="ui-group"><span class="ui-text">Reward:</span><span id="lastReward" class="ui-value">0.0</span></div>
+        <div class="ui-group"><span class="ui-text">Q-States:</span><span id="qTableSize" class="ui-value">0</span></div>
+
+        <button id="aiButton" class="control-button" onclick="toggleAI()">Enable AI</button>
+        <button id="fastTrainButton" class="control-button" onclick="toggleFastTrain()">Fast Train</button>
+        <button id="saveButton" class="control-button" onclick="saveLearningState()">Save State</button>
+        <button id="loadButton" class="control-button" onclick="triggerLoad()">Load State</button>
+        <button id="resetProgressButton" class="control-button" onclick="resetAllProgress()">Reset All</button>
+        <button id="muteButton" class="control-button" onclick="toggleMute()">Mute</button> <input type="file" id="loadStateInput" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
+
+        <div class="hyperparam-group">
+            <label for="alphaSlider">Alpha (LR): <span id="alphaValue" class="value-display">0.1</span></label>
+            <input type="range" id="alphaSlider" min="0.01" max="1" step="0.01" value="0.1" oninput="updateHyperparameter('alpha', this.value)">
+        </div>
+         <div class="hyperparam-group">
+            <label for="gammaSlider">Gamma (DF): <span id="gammaValue" class="value-display">0.9</span></label>
+            <input type="range" id="gammaSlider" min="0.1" max="0.99" step="0.01" value="0.9" oninput="updateHyperparameter('gamma', this.value)">
+        </div>
+         <div class="hyperparam-group">
+            <label for="epsilonDecaySlider">Epsilon Decay: <span id="epsilonDecayValue" class="value-display">0.999</span></label>
+            <input type="range" id="epsilonDecaySlider" min="0.99" max="0.9999" step="0.0001" value="0.999" oninput="updateHyperparameter('epsilonDecay', this.value)">
+        </div>
+         <div class="ui-group"><span class="ui-text">Epsilon:</span><span id="epsilon" class="ui-value">1.00</span></div>
+    </div>
+
+    <div id="gameOver"> Game Over! <br> <button onclick="restartGame()">Restart Episode</button> </div>
+
+    <script>
+        // --- Global Variables ---
+        let scene, camera, renderer, player, obstacles = [], qTable = {};
+        let score = 0, topScore = 0, episodeCount = 0, lastReward = 0;
+        let gameIsOver = false, aiEnabled = false, fastTrainMode = false;
+        let spawnTimer = 0, gameStartTime = 0, survivalTime = 0;
+        let currentState = null, currentActionIndex = 1;
+
+        // --- Game Settings & Hyperparameters ---
+        let playerSpeed = 0.18;
+        let baseObstacleSpeed = 0.05; let currentObstacleSpeed = 0.05; let obstacleSpeedIncrease = 0.0001;
+        let spawnInterval = 60;
+        const gameBounds = { x: 5, y: 7 };
+        const edgeMargin = 1.0; const edgePenalty = -0.1; const timeScoreFactor = 0.001;
+
+        let alpha = 0.1; let gamma = 0.9; let epsilon = 1.0; let initialEpsilon = 1.0;
+        let epsilonDecay = 0.999; const minEpsilon = 0.01;
+        const stepsPerFrame = 50; const autoRestartDelay = 300;
+
+        // State Discretization
+        const playerXBuckets = 10; const obstacleXBuckets = 7; const obstacleYBuckets = 10;
+
+        // --- Sound Synthesis (Tone.js) ---
+        let crashSynth, dodgeSynth;
+        let soundEnabled = false; // Tracks if Tone context is started
+        let isMuted = false; // Tracks if sound output is muted
+
+        function setupSound() {
+             if (typeof Tone !== 'undefined' && !soundEnabled) {
+                // Tone.start() is crucial for enabling audio context in many browsers
+                Tone.start().then(() => {
+                    try {
+                        crashSynth = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+                        dodgeSynth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.2 } }).toDestination();
+
+                        // Apply initial mute state after setup
+                        Tone.Destination.mute = isMuted;
+
+                        soundEnabled = true;
+                        console.log("Sound enabled and context started.");
+                        updateMuteButton(); // Update button state after setup
+                    } catch (e) {
+                        console.error("Tone.js setup failed:", e);
+                        soundEnabled = false;
+                    }
+                }).catch(e => {
+                     console.error("Tone.start() failed:", e);
+                     soundEnabled = false; // Ensure sound stays disabled if context fails
+                });
+            } else if (soundEnabled) {
+                 // If already enabled, just ensure mute state is correct (e.g., if called by toggleMute)
+                 Tone.Destination.mute = isMuted;
+            }
+        }
+
+        function playCrashSound() { if (soundEnabled && crashSynth) { try { crashSynth.triggerAttackRelease("0.1"); } catch (e) { console.error("Crash sound error:", e); } } }
+        function playDodgeSound() { if (soundEnabled && dodgeSynth) { try { dodgeSynth.triggerAttackRelease("C5", "0.1"); } catch (e) { console.error("Dodge sound error:", e); } } }
+
+        function toggleMute() {
+            // Ensure sound context is started before trying to mute/unmute
+            setupSound();
+
+            // Only proceed if sound setup was potentially successful
+            if (typeof Tone !== 'undefined') {
+                isMuted = !isMuted;
+                Tone.Destination.mute = isMuted; // Apply mute state to Tone's master output
+                console.log(`Sound ${isMuted ? 'Muted' : 'Unmuted'}`);
+                updateMuteButton();
+            } else {
+                 console.warn("Cannot toggle mute: Tone.js not available.");
+            }
+        }
+
+        function updateMuteButton() {
+             const muteButton = document.getElementById('muteButton');
+             if (isMuted) {
+                 muteButton.innerText = 'Unmute';
+                 muteButton.classList.add('muted');
+             } else {
+                 muteButton.innerText = 'Mute';
+                 muteButton.classList.remove('muted');
+             }
+        }
+
+
+        // --- Initialization ---
+        function init() {
+            loadProgress(); // Load saved progress first
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a1a);
+
+            const aspect = calculateAspectRatio();
+            camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+            camera.position.set(0, 2.5, 11);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            updateRendererSize();
+            document.body.appendChild(renderer.domElement);
+
+            // Player
+            const playerGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const playerMaterial = new THREE.MeshStandardMaterial({ color: 0x39FF14, emissive: 0x113300, roughness: 0.4, metalness: 0.1 });
+            player = new THREE.Mesh(playerGeometry, playerMaterial);
+            resetPlayer();
+            scene.add(player);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            directionalLight.position.set(8, 12, 10);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+            const hemiLight = new THREE.HemisphereLight(0x4488ff, 0x224488, 0.5);
+            scene.add(hemiLight);
+
+
+            window.addEventListener('keydown', handleKeyDown);
+            window.addEventListener('resize', onWindowResize);
+
+            // Set initial slider values from loaded/default params
+            document.getElementById('alphaSlider').value = alpha;
+            document.getElementById('gammaSlider').value = gamma;
+            document.getElementById('epsilonDecaySlider').value = epsilonDecay;
+
+            updateMuteButton(); // Set initial mute button text/state
+            updateUI();
+            animate();
+        }
+
+        // --- Helper Functions ---
+        function calculateAspectRatio() { const canvas = renderer?.domElement; if (!canvas) return window.innerWidth / window.innerHeight; return canvas.clientWidth / canvas.clientHeight; }
+        function onWindowResize() { updateRendererSize(); camera.updateProjectionMatrix(); }
+        function updateRendererSize() { const targetWidth = Math.min(window.innerWidth * 0.9, 900); const targetHeight = Math.min(window.innerHeight * 0.65, 650); renderer.setSize(targetWidth, targetHeight); camera.aspect = targetWidth / targetHeight; }
+        function resetPlayer() { player.position.set(0, -gameBounds.y + 0.5, 0); }
+
+        // --- UI & Control Functions ---
+        function updateUI() {
+            document.getElementById('score').innerText = Math.floor(score);
+            document.getElementById('topScore').innerText = Math.floor(topScore);
+            document.getElementById('episode').innerText = episodeCount;
+            document.getElementById('epsilon').innerText = epsilon.toFixed(3);
+            document.getElementById('lastReward').innerText = lastReward.toFixed(2);
+            document.getElementById('qTableSize').innerText = Object.keys(qTable).length;
+            document.getElementById('alphaValue').innerText = parseFloat(alpha).toFixed(2);
+            document.getElementById('gammaValue').innerText = parseFloat(gamma).toFixed(2);
+            document.getElementById('epsilonDecayValue').innerText = parseFloat(epsilonDecay).toFixed(4);
+        }
+
+        function updateHyperparameter(param, value) {
+            const numValue = parseFloat(value);
+            switch(param) {
+                case 'alpha': alpha = numValue; break;
+                case 'gamma': gamma = numValue; break;
+                case 'epsilonDecay': epsilonDecay = numValue; break;
+            }
+            updateUI();
+        }
+
+        function toggleAI() {
+             setupSound(); // Attempt sound setup on first interaction
+             aiEnabled = !aiEnabled;
+             const aiButton = document.getElementById('aiButton');
+             aiButton.innerText = aiEnabled ? 'Disable AI' : 'Enable AI';
+             aiButton.classList.toggle('active', aiEnabled);
+             console.log(`AI ${aiEnabled ? 'Enabled' : 'Disabled'}`);
+             if (aiEnabled) { if (gameIsOver && !fastTrainMode) { restartGame(); } else if (!gameIsOver) { currentState = discretizeState(); currentActionIndex = chooseAction(currentState); } }
+        }
+
+        function toggleFastTrain() {
+            fastTrainMode = !fastTrainMode;
+            const ftButton = document.getElementById('fastTrainButton');
+            ftButton.innerText = fastTrainMode ? 'Normal Speed' : 'Fast Train';
+            ftButton.classList.toggle('active', fastTrainMode);
+            if (fastTrainMode && !aiEnabled) { toggleAI(); }
+            console.log(`Fast Train ${fastTrainMode ? 'Enabled' : 'Disabled'}`);
+        }
+
+        function handleKeyDown(event) { if (gameIsOver || aiEnabled || fastTrainMode) return; let moveDistance = playerSpeed * 5; switch (event.key) { case 'ArrowLeft': case 'a': player.position.x -= moveDistance; break; case 'ArrowRight': case 'd': player.position.x += moveDistance; break; } player.position.x = Math.max(-gameBounds.x + 0.5, Math.min(gameBounds.x - 0.5, player.position.x)); }
+
+        // --- AI & Learning ---
+        function discretizeState() { let closestObstacle = null; let minVerticalDist = Infinity; obstacles.forEach(obs => { const dy = obs.position.y - player.position.y; if (dy > 0 && dy < gameBounds.y * 1.5) { if (dy < minVerticalDist) { minVerticalDist = dy; closestObstacle = obs; } } }); const playerXRange = gameBounds.x * 2; const playerXNormalized = (player.position.x + gameBounds.x) / playerXRange; const playerXBucket = Math.min(playerXBuckets - 1, Math.max(0, Math.floor(playerXNormalized * playerXBuckets))); let obsXBucket = Math.floor(obstacleXBuckets / 2); let obsYBucket = obstacleYBuckets - 1; if (closestObstacle) { const relativeX = closestObstacle.position.x - player.position.x; const obsXNormalized = (relativeX + gameBounds.x) / (gameBounds.x * 2); obsXBucket = Math.min(obstacleXBuckets - 1, Math.max(0, Math.floor(obsXNormalized * obstacleXBuckets))); const yDistNormalized = Math.min(1, minVerticalDist / (gameBounds.y * 1.5)); obsYBucket = Math.min(obstacleYBuckets - 1, Math.max(0, Math.floor(yDistNormalized * obstacleYBuckets))); } const nearLeftEdge = player.position.x < (-gameBounds.x + edgeMargin); const nearRightEdge = player.position.x > (gameBounds.x - edgeMargin); const nearEdgeBucket = (nearLeftEdge || nearRightEdge) ? 1 : 0; return `P${playerXBucket}_OX${obsXBucket}_OY${obsYBucket}_NE${nearEdgeBucket}`; }
+        function getQValue(state, actionIndex) { return qTable[state]?.[actionIndex] ?? 0; }
+        function chooseAction(state) { if (Math.random() < epsilon) { return Math.floor(Math.random() * 3); } else { const qValues = [getQValue(state, 0), getQValue(state, 1), getQValue(state, 2)]; const maxQ = Math.max(...qValues); const bestActions = qValues.reduce((acc, q, index) => { if (q === maxQ) acc.push(index); return acc; }, []); return bestActions[Math.floor(Math.random() * bestActions.length)]; } }
+        function updateQTable(oldState, actionIndex, reward, newState) { if (!qTable[oldState]) qTable[oldState] = [0, 0, 0]; const maxFutureQ = (newState === 'terminal') ? 0 : Math.max(getQValue(newState, 0), getQValue(newState, 1), getQValue(newState, 2)); const oldQValue = qTable[oldState][actionIndex]; const targetQValue = reward + gamma * maxFutureQ; const newQValue = oldQValue + alpha * (targetQValue - oldQValue); qTable[oldState][actionIndex] = newQValue; }
+        function performAction(actionIndex) { let move = 0; if (actionIndex === 0) move = -1; else if (actionIndex === 2) move = 1; if (move !== 0) { player.position.x += move * playerSpeed; player.position.x = Math.max(-gameBounds.x + 0.5, Math.min(gameBounds.x - 0.5, player.position.x)); } }
+
+        // --- Game Logic ---
+        function spawnObstacle() { const sizeVariance = 0.4; const baseSize = 0.8; const randomSize = baseSize + (Math.random() - 0.5) * 2 * sizeVariance; const obstacleGeometry = new THREE.BoxGeometry(randomSize, randomSize, randomSize); const obstacleMaterial = new THREE.MeshStandardMaterial({ color: 0xFF1439, emissive: 0x330011, roughness: 0.6, metalness: 0.1 }); const obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial); obstacle.position.x = (Math.random() - 0.5) * (gameBounds.x * 2 - 1); obstacle.position.y = gameBounds.y + 1 + Math.random(); obstacle.position.z = 0; obstacle.rotation.x = Math.random() * Math.PI; obstacle.rotation.y = Math.random() * Math.PI; obstacles.push(obstacle); scene.add(obstacle); }
+        function checkCollisions() { const playerBox = new THREE.Box3().setFromObject(player); for (let i = obstacles.length - 1; i >= 0; i--) { const obstacleBox = new THREE.Box3().setFromObject(obstacles[i]); if (playerBox.intersectsBox(obstacleBox)) { return true; } } return false; }
+
+        function gameOver() { if (gameIsOver) return; gameIsOver = true; playCrashSound(); if (!fastTrainMode) { document.getElementById('gameOver').style.display = 'block'; } console.log(`Ep ${episodeCount}: Score=${Math.floor(score)}, Top=${Math.floor(topScore)}, Reward=${totalReward.toFixed(1)}, Epsilon=${epsilon.toFixed(3)}, Speed=${currentObstacleSpeed.toFixed(4)}`); lastReward = -10; totalReward += lastReward; if (aiEnabled && currentState !== null) { updateQTable(currentState, currentActionIndex, lastReward, 'terminal'); } if (score > topScore) { topScore = score; console.log(`--- New Top Score: ${Math.floor(topScore)} ---`); } if (epsilon > minEpsilon) { epsilon *= epsilonDecay; } else { epsilon = minEpsilon; } updateUI(); if (aiEnabled) { if (fastTrainMode) { restartGame(); } else { setTimeout(restartGame, autoRestartDelay); } } }
+        function restartGame() { gameIsOver = false; score = 0; totalReward = 0; lastReward = 0; gameStartTime = Date.now(); survivalTime = 0; currentObstacleSpeed = baseObstacleSpeed + episodeCount * obstacleSpeedIncrease; if (!fastTrainMode) { document.getElementById('gameOver').style.display = 'none'; } resetPlayer(); obstacles.forEach(obstacle => scene.remove(obstacle)); obstacles = []; spawnTimer = 0; episodeCount++; if (aiEnabled) { currentState = discretizeState(); currentActionIndex = chooseAction(currentState); } else { currentState = null; currentActionIndex = 1; } }
+
+        // --- Core Game Step ---
+        function runGameStep() { if (gameIsOver) return; let frameReward = 0; survivalTime = (Date.now() - gameStartTime) / 1000.0; score += timeScoreFactor; frameReward += 0.01; const nearLeftEdge = player.position.x < (-gameBounds.x + edgeMargin); const nearRightEdge = player.position.x > (gameBounds.x - edgeMargin); if (nearLeftEdge || nearRightEdge) { frameReward += edgePenalty; } if (aiEnabled) { if (currentState === null) currentState = discretizeState(); if (currentActionIndex === null) currentActionIndex = chooseAction(currentState); performAction(currentActionIndex); } spawnTimer++; if (spawnTimer >= spawnInterval) { spawnObstacle(); spawnTimer = 0; } let obstacleDodgedThisFrame = false; for (let i = obstacles.length - 1; i >= 0; i--) { obstacles[i].position.y -= currentObstacleSpeed; obstacles[i].rotation.z += 0.01 * (i % 2 === 0 ? 1 : -1); if (obstacles[i].position.y < -gameBounds.y - 1) { scene.remove(obstacles[i]); obstacles.splice(i, 1); score += 1.0; frameReward += 1.0; obstacleDodgedThisFrame = true; } } if (obstacleDodgedThisFrame) { playDodgeSound(); } if (checkCollisions()) { gameOver(); } else if (aiEnabled) { const nextState = discretizeState(); if (currentState !== null && currentActionIndex !== null) { updateQTable(currentState, currentActionIndex, frameReward, nextState); } currentState = nextState; currentActionIndex = chooseAction(currentState); lastReward = frameReward; totalReward += frameReward; } }
+
+        // --- Main Loop ---
+        function animate() { requestAnimationFrame(animate); if (fastTrainMode) { for (let i = 0; i < stepsPerFrame; i++) { if (!gameIsOver) { runGameStep(); } else { break; } } updateUI(); } else { runGameStep(); updateUI(); renderer.render(scene, camera); } }
+
+        // --- Save/Load/Reset ---
+        const localStorageKey = 'qLearningDodgeGameState';
+        function saveLearningState(isAutoSave = false) { try { const stateToSave = { qTable: qTable, topScore: topScore, episodeCount: episodeCount, epsilon: epsilon, alpha: alpha, gamma: gamma, epsilonDecay: epsilonDecay }; const stateString = JSON.stringify(stateToSave); if (isAutoSave) { localStorage.setItem(localStorageKey, stateString); } else { const blob = new Blob([stateString], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `qlearning_state_ep${episodeCount}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); console.log("Learning state saved to file."); localStorage.setItem(localStorageKey, stateString); } } catch (error) { console.error("Error saving state:", error); if (!isAutoSave) alert("Failed to save state."); } }
+        setInterval(() => { if (!gameIsOver && episodeCount > 0) { saveLearningState(true); } }, 30000);
+        function triggerLoad() { document.getElementById('loadStateInput').click(); }
+        function handleFileLoad(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { loadStateFromString(e.target.result, "File"); }; reader.onerror = function(e) { console.error("Error reading file:", e); alert("Failed to read file."); }; reader.readAsText(file); event.target.value = null; }
+        function loadStateFromString(stateString, source) { try { const loadedData = JSON.parse(stateString); if (typeof loadedData === 'object' && loadedData !== null && loadedData.qTable) { qTable = loadedData.qTable; topScore = loadedData.topScore ?? 0; episodeCount = loadedData.episodeCount ?? 0; epsilon = loadedData.epsilon ?? initialEpsilon; alpha = loadedData.alpha ?? 0.1; gamma = loadedData.gamma ?? 0.9; epsilonDecay = loadedData.epsilonDecay ?? 0.999; console.log(`State loaded from ${source}. Q-States: ${Object.keys(qTable).length}, Ep: ${episodeCount}, Top: ${topScore}, Eps: ${epsilon.toFixed(3)}`); document.getElementById('alphaSlider').value = alpha; document.getElementById('gammaSlider').value = gamma; document.getElementById('epsilonDecaySlider').value = epsilonDecay; if (aiEnabled && !gameIsOver) { currentState = discretizeState(); currentActionIndex = chooseAction(currentState); } else { currentState = null; currentActionIndex = 1; } currentObstacleSpeed = baseObstacleSpeed + episodeCount * obstacleSpeedIncrease; updateUI(); if (source === "File") alert("State loaded!"); } else { throw new Error("Invalid state data format."); } } catch (error) { console.error(`Error loading state from ${source}:`, error); if (source === "File") alert(`Failed to load state: ${error.message}`); } }
+        function loadProgress() { const savedState = localStorage.getItem(localStorageKey); if (savedState) { console.log("Loading state from localStorage..."); loadStateFromString(savedState, "localStorage"); } else { console.log("No saved state found."); alpha = 0.1; gamma = 0.9; epsilonDecay = 0.999; epsilon = initialEpsilon; document.getElementById('alphaSlider').value = alpha; document.getElementById('gammaSlider').value = gamma; document.getElementById('epsilonDecaySlider').value = epsilonDecay; } }
+        function resetAllProgress(confirmReset = true) { let confirmed = !confirmReset; if (confirmReset) { confirmed = confirm("Reset ALL progress (Q-Table, Scores, Episode Count)?"); } if (confirmed) { console.log("Resetting progress..."); qTable = {}; score = 0; topScore = 0; episodeCount = 0; epsilon = initialEpsilon; alpha = 0.1; gamma = 0.9; epsilonDecay = 0.999; document.getElementById('alphaSlider').value = alpha; document.getElementById('gammaSlider').value = gamma; document.getElementById('epsilonDecaySlider').value = epsilonDecay; localStorage.removeItem(localStorageKey); if (!gameIsOver) { restartGame(); } else { updateUI(); } alert("Progress reset."); } }
+
+        // --- Start ---
+        window.onload = init;
+
+    </script>
+</body>
+</html>
