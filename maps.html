@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chuck's Embedded Maps</title>
+  <style>
+    /* Basic body styling */
+    body {
+      font-family: Arial, sans-serif; /* Standard sans-serif font */
+      margin: 0; /* Remove default body margin */
+      padding: 0; /* Remove default body padding */
+      background-color: #f4f4f4; /* Light gray background */
+    }
+    /* Header styling */
+    header {
+      background-color: #002855; /* Dark blue background */
+      color: #ffcc33; /* Gold/yellow text */
+      padding: 20px; /* Padding around header content */
+      text-align: center; /* Center align header text */
+    }
+    /* Navigation bar styling */
+    nav {
+      background-color: #00457c; /* Medium blue background */
+      display: flex; /* Use flexbox for layout */
+      justify-content: center; /* Center navigation links horizontally */
+      padding: 10px 0; /* Padding top/bottom */
+    }
+    /* Navigation link styling */
+    nav a {
+      color: white; /* White text color */
+      margin: 0 15px; /* Horizontal margin between links */
+      text-decoration: none; /* Remove underline from links */
+      font-weight: bold; /* Make link text bold */
+    }
+    /* Main content container styling */
+    .container {
+      max-width: 900px; /* Maximum width of the content area */
+      margin: 20px auto; /* Center the container horizontally with margin */
+      padding: 20px; /* Padding inside the container */
+      background: white; /* White background for content */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+      border-radius: 10px; /* Rounded corners */
+    }
+    /* Section styling */
+    section {
+      margin-bottom: 30px; /* Space below each section */
+    }
+    /* H2 heading styling */
+    h2 {
+      color: #002855; /* Dark blue color for headings */
+    }
+    /* Responsive wrapper for map embeds */
+    .map-embed {
+        position: relative; /* Needed for absolute positioning of iframe */
+        overflow: hidden; /* Hide any overflow */
+        padding-top: 56.25%; /* 16:9 Aspect Ratio (adjust if needed) */
+        margin-bottom: 20px; /* Space below each map */
+    }
+    /* Iframe styling within the responsive wrapper */
+    .map-embed iframe {
+        position: absolute; /* Position iframe absolutely within wrapper */
+        top: 0;
+        left: 0;
+        width: 100%; /* Full width of wrapper */
+        height: 100%; /* Full height of wrapper */
+        border: 0; /* Remove default iframe border */
+    }
+     /* Simple iframe styling (fixed height, full width) */
+    .simple-iframe {
+        width: 100%; /* Make iframe take full container width */
+        height: 450px; /* Default fixed height, adjust as needed */
+        border: 0; /* Remove default iframe border */
+        margin-bottom: 20px; /* Add space below each map */
+    }
+    /* Footer styling */
+    footer {
+      background-color: #002855; /* Dark blue background */
+      color: white; /* White text color */
+      text-align: center; /* Center align footer text */
+      padding: 15px; /* Padding around footer content */
+      margin-top: 20px; /* Space above the footer */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Chuck</h1>
+    <p>Innovating at the Intersection of Technology & the Great Outdoors</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Back to Home</a>
+  </nav>
+
+  <div class="container">
+    <section id="intro">
+      <h2>My Embedded Maps</h2>
+      <p>This page showcases a collection of embedded Google Maps related to various projects, interests, locations, or adventures. Explore the interactive maps below.</p>
+    </section>
+
+    <section id="maps-area">
+      <h2>Map Collection</h2>
+      <p>Use the controls within each map to navigate, zoom, and explore.</p>
+
+      <h3>Our adventures</h3>
+      <p>Our family adventures.</p>
+      <iframe class="simple-iframe" src="https://www.google.com/maps/d/embed?mid=1bm0wmcrLbVZ739wKOPfTFwyxHtUeoNUD&hl=en&ehbc=2E312F" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+      <h3>Our move from NY to California</h3>
+      <p>Mapping our cross-country journey from New York to California.</p>
+      <iframe class="simple-iframe" src="https://www.google.com/maps/d/embed?mid=1-ptyyUcl3prz39Y02zjMN0pwXYs&hl=en&ehbc=2E312F" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+      <h3>SoCal to NY</h3>
+      <p>Mapping our family's move back across the country from Southern California to New York.</p>
+      <iframe class="simple-iframe" src="https://www.google.com/maps/d/embed?mid=1vQg9a7krU99y8iYdbNQKhOwPQ2By2opt&hl=en&ehbc=2E312F" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+      <h3>HAM Radio Contacts</h3>
+      <p>Radio contacts I have found from my house using HAM radio.</p>
+      <iframe class="simple-iframe" src="https://www.google.com/maps/d/embed?mid=1G1vc0LJ-u_t-45UrbjoEJ3_64VhC52g&hl=en&ehbc=2E312F" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+      <h3>UCR Research systems</h3>
+      <p>A map showing the locations of UCR Research systems.</p>
+      <iframe class="simple-iframe" src="https://www.google.com/maps/d/embed?mid=1S7OMAHp160ysAQ1lv5EAFvwRvQrMXXsZ&hl=en&ehbc=2E312F" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+    </section>
+  </div>
+
+  <footer>
+    <elevenlabs-convai agent-id="ymAHXqNkK4hiYUdKTbXq"></elevenlabs-convai><script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+  </footer>
+</body>
+</html>
