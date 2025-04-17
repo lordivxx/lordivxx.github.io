@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HPC Workflow Simulator with Packet Animations</title>
   <style>
-    body { margin:0; padding:0; background:#1e1e2f; color:#fafafa; font-family:Arial,sans-serif; display:flex; flex-direction:column; align-items:center; }
-    #controls { margin:20px; }
+    body { margin:0; padding:20px; background:#1e1e2f; color:#fafafa; font-family:Arial,sans-serif; display:flex; flex-direction:column; align-items:center; }
+    h1 { margin-bottom:10px; }
+    #description { max-width:900px; text-align:left; margin-bottom:20px; }
+    #controls { margin-bottom:20px; }
     #simulator { background:#2e2e44; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.5); }
     input, button { padding:6px 10px; margin:0 5px; border-radius:4px; border:none; }
     #jobList { margin:20px 0; list-style:none; padding:0; max-width:900px; }
@@ -14,6 +16,16 @@
   </style>
 </head>
 <body>
+  <h1>HPC Workflow Simulator</h1>
+  <div id="description">
+    <p>This interactive simulator visualizes how jobs flow through a Slurm-based HPC cluster. You can:</p>
+    <ul>
+      <li>Specify the number of CPU cores (up to 640) and submit up to 5 concurrent jobs.</li>
+      <li>Watch packets animate along network links during submission, scheduling, compute, and return stages.</li>
+      <li>See real-time utilization bars on compute nodes and the GPFS storage when active.</li>
+    </ul>
+    <p><strong>How to use:</strong> Enter the desired cores, click <em>Submit Job</em>, and observe the simulation. Hover over nodes for details (future enhancement).</p>
+  </div>
   <div id="controls">
     <label for="coresInput">Cores (max 640):</label>
     <input type="number" id="coresInput" min="1" max="640" value="64" />
@@ -29,19 +41,18 @@
     const coresInput = document.getElementById('coresInput');
     const jobListEl = document.getElementById('jobList');
 
-    // Setup static nodes and connections
     let nodes = [];
     let connections = [];
     function setupNodes() {
       nodes = [];
-      nodes.push({id:'Laptop', x:100, y:300});      // 0
-      nodes.push({id:'Login Node', x:250, y:300});  // 1
-      nodes.push({id:'Head Node', x:400, y:300});   // 2
+      nodes.push({id:'Laptop', x:100, y:300});
+      nodes.push({id:'Login Node', x:250, y:300});
+      nodes.push({id:'Head Node', x:400, y:300});
       const rack1X = 650, rack2X = 750;
       const ys = [100,200,300,400,500];
-      for(let i=0;i<5;i++) nodes.push({id:`Compute ${i+1}`, x:rack1X, y:ys[i], freeCores:64}); //3-7
-      for(let i=0;i<5;i++) nodes.push({id:`Compute ${i+6}`, x:rack2X, y:ys[i], freeCores:64}); //8-12
-      nodes.push({id:'GPFS', x:400, y:500});         //13
+      for(let i=0;i<5;i++) nodes.push({id:`Compute ${i+1}`, x:rack1X, y:ys[i], freeCores:64});
+      for(let i=0;i<5;i++) nodes.push({id:`Compute ${i+6}`, x:rack2X, y:ys[i], freeCores:64});
+      nodes.push({id:'GPFS', x:400, y:500});
       connections = [];
       [[0,1],[1,2]].forEach(pair=>connections.push(pair));
       for(let i=3;i<13;i++) connections.push([2,i],[i,13]);
@@ -49,7 +60,6 @@
     }
     setupNodes();
 
-    // Job and packet management
     let jobs = [];
     let nextJobId = 1;
     const durations = {submit:1000, schedule:1000, compute:8000, return:1000};
@@ -84,122 +94,68 @@
 
     function spawnPackets(job, stage) {
       const now = performance.now();
-      if (stage === 0) {
-        packets.push({from: 0, to: 1, start: now, duration: durations.submit});
-      } else if (stage === 1) {
-        // scheduling: login->head, plus home dir access
-        packets.push({from: 1, to: 2, start: now, duration: durations.schedule});
-        packets.push({from: 1, to: 13, start: now, duration: durations.schedule});
-        packets.push({from: 2, to: 13, start: now, duration: durations.schedule});
-      } else if (stage === 2) {
-        // compute stage: head->compute, compute->GPFS, login/head->GPFS
-        job.allocations.forEach(a => {
-          packets.push({from: 2, to: a.nodeIndex, start: now, duration: durations.compute});
-          packets.push({from: a.nodeIndex, to: 13, start: now + durations.compute/2, duration: durations.compute/2});
+      if(stage===0) packets.push({from:0,to:1,start:now,duration:durations.submit});
+      else if(stage===1){
+        packets.push({from:1,to:2,start:now,duration:durations.schedule});
+        packets.push({from:1,to:13,start:now,duration:durations.schedule});
+        packets.push({from:2,to:13,start:now,duration:durations.schedule});
+      } else if(stage===2){
+        job.allocations.forEach(a=>{
+          packets.push({from:2,to:a.nodeIndex,start:now,duration:durations.compute});
+          packets.push({from:a.nodeIndex,to:13,start:now+durations.compute/2,duration:durations.compute/2});
         });
-        packets.push({from: 1, to: 13, start: now, duration: durations.compute});
-        packets.push({from: 2, to: 13, start: now, duration: durations.compute});
-      } else if (stage === 3) {
-        // returning: head->login, plus login/head->GPFS
-        packets.push({from: 2, to: 1, start: now, duration: durations.return});
-        packets.push({from: 1, to: 13, start: now, duration: durations.return});
-        packets.push({from: 2, to: 13, start: now, duration: durations.return});
-      } else if (stage === 4) {
-        packets.push({from: 1, to: 0, start: now, duration: durations.return});
-      }
+        packets.push({from:1,to:13,start:now,duration:durations.compute});
+        packets.push({from:2,to:13,start:now,duration:durations.compute});
+      } else if(stage===3){
+        packets.push({from:2,to:1,start:now,duration:durations.return});
+        packets.push({from:1,to:13,start:now,duration:durations.return});
+        packets.push({from:2,to:13,start:now,duration:durations.return});
+      } else if(stage===4) packets.push({from:1,to:0,start:now,duration:durations.return});
     }
 
     function animate(){
       const now = performance.now();
       ctx.clearRect(0,0,canvas.width,canvas.height);
 
-      // Draw connections
+      // draw connections
       ctx.strokeStyle='#fff'; ctx.lineWidth=2;
-      connections.forEach(([a,b])=>{
-        ctx.beginPath(); ctx.moveTo(nodes[a].x,nodes[a].y); ctx.lineTo(nodes[b].x,nodes[b].y); ctx.stroke();
-      });
+      connections.forEach(([a,b])=>{ctx.beginPath();ctx.moveTo(nodes[a].x,nodes[a].y);ctx.lineTo(nodes[b].x,nodes[b].y);ctx.stroke();});
 
-      // Compute live usage
-      const usages = Array(nodes.length).fill(0);
-      let totalGPFS = 0;
-      for(let i=3;i<13;i++){
-        const used = 64 - nodes[i].freeCores;
-        usages[i] = (used/64)*100;
-        totalGPFS += used;
-      }
-      usages[13] = (totalGPFS/(10*64))*100;
-      usages[1] = usages[13]; usages[2] = usages[13];
+      // compute usage
+      const usages=Array(nodes.length).fill(0);let totalGPFS=0;
+      for(let i=3;i<13;i++){const used=64-nodes[i].freeCores;usages[i]=(used/64)*100;totalGPFS+=used;}
+      usages[13]=(totalGPFS/(10*64))*100;usages[1]=usages[13];usages[2]=usages[13];
 
-      // Track node activity
-      const active = Array(nodes.length).fill(false);
-
-      // Update and render jobs
-      jobs = jobs.filter(job=>{
-        const elapsed = now - job.startTime;
-        let stage;
-        if(elapsed < durations.submit) stage=0;
-        else if(elapsed < durations.submit+durations.schedule) stage=1;
-        else if(elapsed < durations.submit+durations.schedule+durations.compute) stage=2;
-        else if(elapsed < totalDur-durations.return) stage=3;
-        else if(elapsed < totalDur) stage=4;
-        else { job.allocations.forEach(a=>nodes[a.nodeIndex].freeCores+=a.cores); return false; }
-
-        // spawn packets on stage change
-        if(stage !== job.lastStage){ spawnPackets(job,stage); job.lastStage=stage; }
-
-        // mark active
+      const active=Array(nodes.length).fill(false);
+      jobs=jobs.filter(job=>{
+        const elapsed=now-job.startTime;let stage;
+        if(elapsed<durations.submit) stage=0;
+        else if(elapsed<durations.submit+durations.schedule) stage=1;
+        else if(elapsed<durations.submit+durations.schedule+durations.compute) stage=2;
+        else if(elapsed<totalDur-durations.return) stage=3;
+        else if(elapsed<totalDur) stage=4;
+        else{job.allocations.forEach(a=>nodes[a.nodeIndex].freeCores+=a.cores);return false;}
+        if(stage!==job.lastStage){spawnPackets(job,stage);job.lastStage=stage;}
         if(stage===0) active[0]=active[1]=active[13]=true;
         else if(stage===1) active[1]=active[2]=active[13]=true;
-        else if(stage===2){ job.allocations.forEach(a=>active[a.nodeIndex]=true); active[13]=true; }
+        else if(stage===2){job.allocations.forEach(a=>active[a.nodeIndex]=true);active[13]=true;}
         else if(stage>=3) active[2]=active[1]=active[13]=true;
-
-        // draw job markers
         ctx.fillStyle='#ffc107';
-        if(stage===2){
-          job.allocations.forEach(a=>{
-            ctx.beginPath(); ctx.arc(nodes[a.nodeIndex].x,nodes[a.nodeIndex].y,10,0,2*Math.PI); ctx.fill();
-          });
-        } else {
-          let from,to,t;
-          if(stage===0){ from=0; to=1; t=elapsed/durations.submit; }
-          else if(stage===1){ from=1; to=2; t=(elapsed-durations.submit)/durations.schedule; }
-          else if(stage===3){ from=2; to=1; t=(elapsed-(durations.submit+durations.schedule+durations.compute))/durations.return; }
-          else if(stage===4){ from=1; to=0; t=(elapsed-(durations.submit+durations.schedule+durations.compute+durations.return))/durations.return; }
-          if(from!==undefined){
-            const x=nodes[from].x+(nodes[to].x-nodes[from].x)*t;
-            const y=nodes[from].y+(nodes[to].y-nodes[from].y)*t;
-            ctx.beginPath(); ctx.arc(x,y,10,0,2*Math.PI); ctx.fill();
-          }
+        if(stage===2) job.allocations.forEach(a=>{ctx.beginPath();ctx.arc(nodes[a.nodeIndex].x,nodes[a.nodeIndex].y,10,0,2*Math.PI);ctx.fill();});
+        else{let from,to,t;
+          if(stage===0){from=0;to=1;t=elapsed/durations.submit;}else if(stage===1){from=1;to=2;t=(elapsed-durations.submit)/durations.schedule;}
+          else if(stage===3){from=2;to=1;t=(elapsed-(durations.submit+durations.schedule+durations.compute))/durations.return;}
+          else if(stage===4){from=1;to=0;t=(elapsed-(durations.submit+durations.schedule+durations.compute+durations.return))/durations.return;}
+          if(from!==undefined){const x=nodes[from].x+(nodes[to].x-nodes[from].x)*t;const y=nodes[from].y+(nodes[to].y-nodes[from].y)*t;ctx.beginPath();ctx.arc(x,y,10,0,2*Math.PI);ctx.fill();}
         }
         return true;
-      });
-      renderJobList();
+      });renderJobList();
 
-      // Render packets
-      packets = packets.filter(p=>{
-        const t = (now - p.start) / p.duration;
-        if(t < 0) return true;
-        if(t > 1) return false;
-        const x = nodes[p.from].x + (nodes[p.to].x - nodes[p.from].x) * t;
-        const y = nodes[p.from].y + (nodes[p.to].y - nodes[p.from].y) * t;
-        ctx.fillStyle='#00e5ff'; ctx.beginPath(); ctx.arc(x,y,6,0,2*Math.PI); ctx.fill();
-        return true;
-      });
+      // render packets
+      packets=packets.filter(p=>{const t=(now-p.start)/p.duration; if(t<0)return true; if(t>1)return false; const x=nodes[p.from].x+(nodes[p.to].x-nodes[p.from].x)*t; const y=nodes[p.from].y+(nodes[p.to].y-nodes[p.from].y)*t; ctx.fillStyle='#00e5ff';ctx.beginPath();ctx.arc(x,y,6,0,2*Math.PI);ctx.fill(); return true;});
 
-      // Draw nodes with usage bars if active
-      nodes.forEach((node,i)=>{
-        const pulse = active[i] ? 5*Math.sin(now/200) : 0;
-        const r = 40 + (active[i]?pulse:0);
-        ctx.fillStyle = active[i] ? '#ffd54f' : '#4e8cff';
-        ctx.beginPath(); ctx.arc(node.x,node.y,r,0,2*Math.PI); ctx.fill();
-        ctx.fillStyle='#fff'; ctx.font='14px sans-serif'; ctx.textAlign='center'; ctx.fillText(node.id,node.x,node.y+5);
-        if(active[i] && (i>=3||i===1||i===2||i===13)){
-          const pct = usages[i];
-          const bw=60, bh=6, bx=node.x-bw/2, by=node.y+45;
-          ctx.strokeStyle='#fff'; ctx.strokeRect(bx,by,bw,bh);
-          ctx.fillStyle='#ffcc4e'; ctx.fillRect(bx,by,bw*(pct/100),bh);
-        }
-      });
+      // draw nodes with usage
+      nodes.forEach((node,i)=>{const pulse=active[i]?5*Math.sin(now/200):0;const r=40+(active[i]?pulse:0);ctx.fillStyle=active[i]?'#ffd54f':'#4e8cff';ctx.beginPath();ctx.arc(node.x,node.y,r,0,2*Math.PI);ctx.fill();ctx.fillStyle='#fff';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText(node.id,node.x,node.y+5); if(active[i]&&(i>=3||i===1||i===2||i===13)){const pct=usages[i];const bw=60,bh=6,bx=node.x-bw/2,by=node.y+45;ctx.strokeStyle='#fff';ctx.strokeRect(bx,by,bw,bh);ctx.fillStyle='#ffcc4e';ctx.fillRect(bx,by,bw*(pct/100),bh);} });
 
       requestAnimationFrame(animate);
     }
