@@ -25,6 +25,18 @@
       <li>Up to 20 jobs may run concurrently; extras queue until enough free cores are available.</li>
       <li>Hover nodes for live stats (cores, packets); cyan packets show real‑time network flow.</li>
     </ul>
+    <h3 style="margin-top:12px">Quick Scenarios to Try</h3>
+    <table style="border-collapse:collapse;font-size:13px">
+      <thead><tr><th style="border-bottom:1px solid #888;padding:4px 8px;text-align:left">Scenario</th><th style="border-bottom:1px solid #888;padding:4px 8px;text-align:left">Cores</th><th style="border-bottom:1px solid #888;padding:4px 8px;text-align:left">What to Watch</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:4px 8px">Single‑core “hello world”</td><td style="padding:4px 8px">1</td><td style="padding:4px 8px">One compute node blips; minimal GPFS traffic.</td></tr>
+        <tr><td style="padding:4px 8px">Single‑node full load</td><td style="padding:4px 8px">64</td><td style="padding:4px 8px">One node hits 100 % utilisation.</td></tr>
+        <tr><td style="padding:4px 8px">Two‑node MPI test</td><td style="padding:4px 8px">128</td><td style="padding:4px 8px">Cross‑node IB packets between two compute nodes.</td></tr>
+        <tr><td style="padding:4px 8px">One rack (5 nodes)</td><td style="padding:4px 8px">320</td><td style="padding:4px 8px">Half the cluster active, IB switch busy.</td></tr>
+        <tr><td style="padding:4px 8px">Cluster‑wide flood</td><td style="padding:4px 8px">640</td><td style="padding:4px 8px">All compute nodes + GPFS at 100 %.</td></tr>
+        <tr><td style="padding:4px 8px">Queue pressure</td><td style="padding:4px 8px">25 jobs × 32</td><td style="padding:4px 8px">20 run, 5 wait—observe queue dynamics.</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div id="controls">
