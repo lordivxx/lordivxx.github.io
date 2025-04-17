@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HPC Workflow Simulator with Multi-Job Slurm Scheduling</title>
+  <title>HPC Workflow Simulator with Live Utilization</title>
   <style>
     body { margin:0; padding:0; background:#1e1e2f; color:#fafafa; font-family:Arial,sans-serif; display:flex; flex-direction:column; align-items:center; }
     #controls { margin:20px; }
@@ -11,6 +11,8 @@
     input, button { padding:6px 10px; margin:0 5px; border-radius:4px; border:none; }
     #jobList { margin:20px 0; list-style:none; padding:0; max-width:900px; }
     #jobList li { background:#344263; margin:4px 0; padding:6px 10px; border-radius:4px; }
+    .usage-bar { height:6px; background:#ffcc4e; margin-top:4px; }
+    .usage-container { width:60px; height:6px; border:1px solid #fff; border-radius:3px; overflow:hidden; margin:4px auto; }
   </style>
 </head>
 <body>
@@ -29,27 +31,19 @@
     const coresInput = document.getElementById('coresInput');
     const jobListEl = document.getElementById('jobList');
 
-    // Node layout with per-node cores
+    // Setup static nodes
     let nodes = [];
     let connections = [];
     function setupNodes() {
       nodes = [];
-      // Submission path
       nodes.push({id:'Laptop', x:100, y:300});      // 0
       nodes.push({id:'Login Node', x:250, y:300});  // 1
       nodes.push({id:'Head Node', x:400, y:300});   // 2
-      // Compute racks (10 nodes, each with 64 cores)
       const rack1X = 650, rack2X = 750;
       const ys = [100,200,300,400,500];
-      for(let i=0;i<5;i++) {
-        nodes.push({id:`Compute ${i+1}`, x:rack1X, y:ys[i], freeCores:64}); // 3..7
-      }
-      for(let i=0;i<5;i++) {
-        nodes.push({id:`Compute ${i+6}`, x:rack2X, y:ys[i], freeCores:64}); // 8..12
-      }
-      // GPFS storage
-      nodes.push({id:'GPFS', x:400, y:500});         // 13
-      // Connections
+      for(let i=0;i<5;i++) nodes.push({id:`Compute ${i+1}`, x:rack1X, y:ys[i], freeCores:64}); //3-7
+      for(let i=0;i<5;i++) nodes.push({id:`Compute ${i+6}`, x:rack2X, y:ys[i], freeCores:64}); //8-12
+      nodes.push({id:'GPFS', x:400, y:500});         //13
       connections = [];
       [[0,1],[1,2]].forEach(pair=>connections.push(pair));
       for(let i=3;i<13;i++) connections.push([2,i],[i,13]);
@@ -61,14 +55,13 @@
     let jobs = [];
     let nextJobId = 1;
     const durations = {submit:1000, schedule:1000, compute:8000, return:1000};
-    const totalDur = durations.submit + durations.schedule + durations.compute + durations.return * 2;
+    const totalDur = durations.submit + durations.schedule + durations.compute + durations.return*2;
 
     function addJob(cores) {
-      if(jobs.length >= 5) return;
+      if(jobs.length>=5) return;
       let remaining = cores;
       const allocations = [];
-      // Allocate across compute nodes
-      for(let i=3; i<13 && remaining>0; i++){
+      for(let i=3;i<13&&remaining>0;i++){
         const avail = nodes[i].freeCores;
         if(avail>0){
           const use = Math.min(avail, remaining);
@@ -77,86 +70,101 @@
           remaining -= use;
         }
       }
-      if(remaining>0) {
-        // Not enough cores: ignore extra
-      }
       jobs.push({id:nextJobId++, cores, allocations, startTime:performance.now()});
       renderJobList();
     }
 
-    function renderJobList() {
+    function renderJobList(){
       jobListEl.innerHTML = '';
-      jobs.forEach(job => {
-        const li = document.createElement('li');
+      jobs.forEach(job=>{
+        const li=document.createElement('li');
         li.textContent = `Job ${job.id}: ${job.cores} cores on ${job.allocations.length} nodes`;
         jobListEl.append(li);
       });
     }
 
-    function drawNode(node, active) {
-      const pulse = active ? 5*Math.sin(performance.now()/200) : 0;
-      const r = 40 + (active ? pulse : 0);
-      ctx.fillStyle = active ? '#ffd54f' : '#4e8cff';
-      ctx.beginPath(); ctx.arc(node.x,node.y,r,0,2*Math.PI); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font='14px sans-serif'; ctx.textAlign='center'; ctx.fillText(node.id,node.x,node.y+5);
-    }
-
-    function drawConnections() {
-      ctx.strokeStyle='#fff'; ctx.lineWidth=2;
-      connections.forEach(([a,b])=>{
-        ctx.beginPath(); ctx.moveTo(nodes[a].x,nodes[a].y); ctx.lineTo(nodes[b].x,nodes[b].y); ctx.stroke();
-      });
-    }
-
-    function animate() {
-      const now = performance.now();
+    function animate(){
+      const now=performance.now();
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      drawConnections();
+      // compute usage percentages
+      const usages = Array(nodes.length).fill(0);
+      // compute nodes
+      let totalGPFS=0;
+      for(let i=3;i<13;i++){
+        const used = 64 - nodes[i].freeCores;
+        usages[i] = (used/64)*100;
+        totalGPFS += used;
+      }
+      // GPFS usage
+      usages[13] = (totalGPFS/(10*64))*100;
+      // login/head usage proportional to GPFS
+      usages[1] = usages[13];
+      usages[2] = usages[13];
+
+      // draw connections
+      ctx.strokeStyle='#fff'; ctx.lineWidth=2;
+      connections.forEach(([a,b])=>{ctx.beginPath();ctx.moveTo(nodes[a].x,nodes[a].y);ctx.lineTo(nodes[b].x,nodes[b].y);ctx.stroke();});
+
+      // track active
       const active = Array(nodes.length).fill(false);
-      // Filter and render jobs
-      jobs = jobs.filter(job => {
-        const elapsed = now - job.startTime;
+      // filter jobs
+      jobs = jobs.filter(job=>{
+        const elapsed=now-job.startTime;
         let stage;
-        if(elapsed < durations.submit) stage = 0;
-        else if(elapsed < durations.submit + durations.schedule) stage = 1;
-        else if(elapsed < durations.submit + durations.schedule + durations.compute) stage = 2;
-        else if(elapsed < totalDur - durations.return) stage = 3;
-        else if(elapsed < totalDur) stage = 4;
-        else {
-          // free cores
-          job.allocations.forEach(a => { nodes[a.nodeIndex].freeCores += a.cores; });
-          return false;
-        }
-        // Mark active nodes
-        if(stage===0) active[0]=active[1]=active[13]=true;
-        else if(stage===1) active[1]=active[2]=active[13]=true;
-        else if(stage===2){ job.allocations.forEach(a=>active[a.nodeIndex]=true); active[13]=true; }
-        else if(stage===3 || stage===4) active[2]=active[1]=active[13]=true;
-        // Draw job visuals
+        if(elapsed<durations.submit) stage=0;
+        else if(elapsed<durations.submit+durations.schedule) stage=1;
+        else if(elapsed<durations.submit+durations.schedule+durations.compute) stage=2;
+        else if(elapsed<totalDur-durations.return) stage=3;
+        else if(elapsed<totalDur) stage=4;
+        else { job.allocations.forEach(a=>nodes[a.nodeIndex].freeCores+=a.cores); return false; }
+
+        if(stage===0) { active[0]=active[1]=active[13]=true; }
+        else if(stage===1) { active[1]=active[2]=active[13]=true; }
+        else if(stage===2) { job.allocations.forEach(a=>active[a.nodeIndex]=true); active[13]=true; }
+        else if(stage===3 || stage===4) { active[2]=active[1]=active[13]=true; }
+
+        // draw job markers
         ctx.fillStyle='#ffc107';
-        if(stage===2) job.allocations.forEach(a=>{
-          ctx.beginPath(); ctx.arc(nodes[a.nodeIndex].x,nodes[a.nodeIndex].y,10,0,2*Math.PI); ctx.fill();
-        });
+        if(stage===2) job.allocations.forEach(a=>{ctx.beginPath();ctx.arc(nodes[a.nodeIndex].x,nodes[a.nodeIndex].y,10,0,2*Math.PI);ctx.fill();});
         else {
           let from,to,t;
-          if(stage===0){ from=0; to=1; t=elapsed/durations.submit; }
-          else if(stage===1){ from=1; to=2; t=(elapsed-durations.submit)/durations.schedule; }
-          else if(stage===3){ from=2; to=1; t=(elapsed-(durations.submit+durations.schedule+durations.compute))/durations.return; }
-          else if(stage===4){ from=1; to=0; t=(elapsed-(durations.submit+durations.schedule+durations.compute+durations.return))/durations.return; }
+          if(stage===0){from=0;to=1;t=elapsed/durations.submit;} 
+          else if(stage===1){from=1;to=2;t=(elapsed-durations.submit)/durations.schedule;} 
+          else if(stage===3){from=2;to=1;t=(elapsed-(durations.submit+durations.schedule+durations.compute))/durations.return;} 
+          else if(stage===4){from=1;to=0;t=(elapsed-(durations.submit+durations.schedule+durations.compute+durations.return))/durations.return;} 
           if(from!==undefined){
             const x=nodes[from].x+(nodes[to].x-nodes[from].x)*t;
             const y=nodes[from].y+(nodes[to].y-nodes[from].y)*t;
-            ctx.beginPath(); ctx.arc(x,y,10,0,2*Math.PI); ctx.fill();
+            ctx.beginPath();ctx.arc(x,y,10,0,2*Math.PI);ctx.fill();
           }
         }
         return true;
       });
+
       renderJobList();
-      nodes.forEach((n,i) => drawNode(n, active[i]));
+
+      // draw nodes with usage bars
+      nodes.forEach((node,i)=>{
+        const pulse = active[i] ? 5 * Math.sin(now/200) : 0;
+        const r = 40 + (active[i] ? pulse : 0);
+        ctx.fillStyle = active[i] ? '#ffd54f' : '#4e8cff';
+        ctx.beginPath(); ctx.arc(node.x, node.y, r, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(node.id, node.x, node.y + 5);
+        // Only show utilization bar when node is active
+        if (active[i]) {
+          const pct = usages[i];
+          const bw = 60, bh = 6;
+          const bx = node.x - bw / 2, by = node.y + 45;
+          ctx.strokeStyle = '#fff'; ctx.strokeRect(bx, by, bw, bh);
+          ctx.fillStyle = '#ffcc4e'; ctx.fillRect(bx, by, bw * (pct / 100), bh);
+        }
+      });
+
       requestAnimationFrame(animate);
     }
 
-    startBtn.addEventListener('click', () => addJob(parseInt(coresInput.value,10)));
+    startBtn.addEventListener('click',()=>addJob(parseInt(coresInput.value,10)));
     animate(); renderJobList();
   </script>
 </body>
