@@ -17,7 +17,20 @@
 <body>
   <h1>HPC Workflow Simulator</h1>
   <div id="description">
-    <p>Submit up to <strong>20</strong> concurrent jobs. If resources are unavailable, jobs wait in a queue until enough cores are free.</p>
+    <p>This interactive demo shows how research workloads move through a university Slurm cluster:</p>
+    <ul>
+      <li><strong>Topology flow</strong>: <em>Laptop → Login Node → Head Scheduler → 10 Compute Nodes (64 cores each) → GPFS Storage</em>.</li>
+      <li><strong>Submit jobs</strong> using the form below. Specify any core count (1‑640). Up to 20 jobs can run at once; additional jobs wait in the queue until resources free up.</li>
+      <li><strong>Visual cues</strong>:
+        <ul>
+          <li>Gold bubbles = job payloads.</li>
+          <li>Cyan packets = network traffic on each link.</li>
+          <li>Glow &amp; bars = node activity and real‑time utilisation.</li>
+        </ul>
+      </li>
+      <li><strong>Hover</strong> over any node for a tooltip with free/used cores, live packet count, and a sparkline of utilisation history.</li>
+    </ul>
+    <p>Try submitting jobs of different sizes and watch how the scheduler allocates cores, queues excess jobs, and releases resources as work completes.</p>
   </div>
   <div id="controls">
     <label for="coresInput">Cores (max 640):</label>
