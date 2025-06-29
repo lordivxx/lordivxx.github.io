@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>West Branch Susquehanna Kayak Trip - Montoursville to Montgomery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <style>
+    body {
+      background-color: #f0f4f8;
+    }
+    .hero-bg {
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1524292334861-3c8871a46932?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+
+  <header class="hero-bg text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl font-bold">One-Day Kayak Trip Plan</h1>
+      <p class="mt-2 text-xl">West Branch Susquehanna: Montoursville to Montgomery</p>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8 space-y-12">
+
+    <section id="overview">
+      <h2 class="text-3xl font-semibold mb-4 text-center">River Overview</h2>
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <p class="mb-4"><strong>Route Length & Paddling Time:</strong> Approximately 14.5 river miles with an expected 5–6 hours paddling time.</p>
+        <p><strong>Key Landmarks:</strong></p>
+        <ul class="list-disc ml-8 space-y-2 mt-2">
+          <li><strong>Put-in:</strong> Montoursville Greevy Access (RM 37.3)</li>
+          <li>Canfield Island & Loyalsock Creek Confluence</li>
+          <li>Racetrack Island (stay left) & King Island (stay right)</li>
+          <li>Bald Eagle Ridge & Muncy Railroad Bridge</li>
+          <li><strong>Lunch Stop:</strong> Muncy Heritage Park (RM 26.7)</li>
+          <li><strong>Take-out:</strong> Montgomery PFBC Access (RM 22.8)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="timeline">
+        <h2 class="text-3xl font-semibold mb-4 text-center">Trip Timeline</h2>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <canvas id="tripTimelineChart"></canvas>
+        </div>
+    </section>
+
+    <section id="hazards">
+      <h2 class="text-3xl font-semibold mb-4 text-center">Hazards & "Gotchas"</h2>
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <ul class="list-disc ml-8 space-y-2">
+          <li><strong>Strainers:</strong> Avoid downed trees, especially near banks and island splits.</li>
+          <li><strong>Shallow Riffles:</strong> Be mindful of hidden rocks in faster-moving water.</li>
+          <li><strong>Private Property:</strong> Respect private land; use designated public access points like Muncy Heritage Park for stops.</li>
+          <li><strong>Weather:</strong> Watch for sudden thunderstorms and get off the water if you hear thunder. Protect yourself from sun and heat.</li>
+          <li><strong>Isolation:</strong> Be prepared for a 10-mile stretch with no road access between Montoursville and Muncy.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="checklist">
+      <h2 class="text-3xl font-semibold mb-4 text-center">Packing Checklist</h2>
+      <div class="bg-white p-6 rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold mb-2">Core Essentials</h3>
+          <ul class="list-disc ml-5">
+            <li>Kayak & Paddle (plus a spare)</li>
+            <li>PFD (Life Jacket) - Worn at all times</li>
+            <li>Drinking Water (2L+ per person) & Snacks</li>
+            <li>Waterproof First-Aid Kit</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Safety & Navigation</h3>
+          <ul class="list-disc ml-5">
+            <li>Whistle and/or Signal Mirror</li>
+            <li>River Map or GPS (in waterproof case)</li>
+            <li>Phone & Battery Bank</li>
+            <li>Headlamp or Flashlight</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Personal Gear</h3>
+          <ul class="list-disc ml-5">
+            <li>Sunscreen, Hat, & Sunglasses</li>
+            <li>Insect Repellent</li>
+            <li>Quick-dry Clothing & Rain Gear</li>
+            <li>Sturdy Water Shoes or Sandals</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-2">Optional Items</h3>
+          <ul class="list-disc ml-5">
+            <li>Dry Bags for Valuables</li>
+            <li>Binoculars / Camera</li>
+            <li>Fishing Gear</li>
+            <li>Small Towel</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="3d-visual">
+        <h2 class="text-3xl font-semibold mb-4 text-center">3D River Visualization</h2>
+        <div id="three-container" class="bg-black p-6 rounded-lg shadow-lg h-96"></div>
+    </section>
+
+  </main>
+
+  <footer class="bg-gray-800 text-white text-center py-4 mt-8">
+    <p>&copy; 2025 Chuck's Kayak Adventures. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Chart.js Timeline
+    const timelineCtx = document.getElementById('tripTimelineChart').getContext('2d');
+    new Chart(timelineCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Meet & Prep', 'Launch', 'Racetrack Island', 'Lunch @ Muncy', 'Paddle to Montgomery', 'Take-out'],
+        datasets: [{
+          label: 'Time (hours)',
+          data: [1.5, 0.5, 1, 1, 1.5, 1],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(255, 99, 132, 0.6)'
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Estimated Time for Each Stage of the Trip'
+          }
+        }
+      }
+    });
+
+    // Three.js Kayak
+    const container = document.getElementById('three-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    // Skybox
+    const loader = new THREE.CubeTextureLoader();
+    const texture = loader.load([
+        'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-x.jpg',
+        'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-x.jpg',
+        'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-y.jpg',
+        'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-y.jpg',
+        'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-z.jpg',
+        'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-z.jpg',
+    ]);
+    scene.background = texture;
+
+    // River
+    const riverGeometry = new THREE.PlaneGeometry(20, 500, 32, 32);
+    const riverMaterial = new THREE.MeshStandardMaterial({ color: 0x1e40af, side: THREE.DoubleSide, transparent: true, opacity: 0.8, roughness: 0.1, metalness: 0.5 });
+    const river = new THREE.Mesh(riverGeometry, riverMaterial);
+    river.rotation.x = -Math.PI / 2;
+    scene.add(river);
+    
+    // Kayak
+    const kayakBody = new THREE.Mesh(new THREE.BoxGeometry(1, 0.5, 4), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
+    const cockpit = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.3, 1), new THREE.MeshStandardMaterial({ color: 0xcccccc }));
+    cockpit.position.y = 0.3;
+    kayakBody.add(cockpit);
+    scene.add(kayakBody);
+
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(0, 10, 5);
+    scene.add(light);
+    
+    camera.position.set(0, 5, 10);
+    camera.lookAt(kayakBody.position);
+
+    let time = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      time += 0.01;
+      kayakBody.position.z -= 0.1;
+      kayakBody.rotation.x = Math.sin(time) * 0.05;
+      if(kayakBody.position.z < -250) kayakBody.position.z = 250;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+  </script>
+
+</body>
+</html>

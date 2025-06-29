@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>West Branch Susquehanna Kayak Trip - July 5th</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <header class="bg-blue-600 text-white py-6">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl font-bold">One-Day Kayak Trip Plan</h1>
+      <p class="mt-2">West Branch Susquehanna: Montoursville to Montgomery &middot; July 5th</p>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8 space-y-16">
+    <!-- River Overview -->
+    <section id="overview">
+      <h2 class="text-2xl font-semibold mb-4">River Overview – Mileage, Time &amp; Landmarks</h2>
+      <div class="bg-white p-6 rounded-lg shadow space-y-4">
+        <p><strong>Route Length &amp; Paddling Time:</strong> Approximately <strong>14.5 river miles</strong> with an expected <strong>5–6 hours</strong> paddling time for intermediate kayakers (10 miles = ~3–4 hours, 12 miles = ~5–6 hours).</p>
+        <p><strong>Landmarks:</strong></p>
+        <ul class="list-disc ml-8 space-y-1">
+          <li>Montoursville Greevy Access (RM 37.3) &ndash; put-in</li>
+          <li>Canfield Island &ndash; archaeological site, possible short detour</li>
+          <li>Loyalsock Creek confluence &ndash; historic Otstonwakin site</li>
+          <li>Racetrack Island (RM 35) &ndash; stay left, private property</li>
+          <li>King Island (RM 32.6) &ndash; stay right to avoid shallows</li>
+          <li>Bald Eagle Ridge &ndash; scenic raptor flyway</li>
+          <li>Muncy Railroad Bridge &ndash; view history, approach Heritage Park</li>
+          <li>Muncy Heritage Park &ndash; lunch stop, public access (RM 26.7)</li>
+          <li>Montgomery PFBC Access (RM 22.8) &ndash; take-out</li>
+        </ul>
+        <div class="mt-4 bg-gray-200 h-64 flex items-center justify-center text-gray-500">
+          <!-- Placeholder: Interactive Map -->
+          Interactive Map Placeholder
+        </div>
+      </div>
+    </section>
+
+    <!-- Water-Level Guidance -->
+    <section id="water-levels">
+      <h2 class="text-2xl font-semibold mb-4">Water-Level Guidance</h2>
+      <div class="bg-white p-6 rounded-lg shadow space-y-4">
+        <p><strong>USGS Williamsport Gauge:</strong> Ideal <strong>1.5–4 ft stage</strong> (~1,000–9,000 CFS). Below ~1.2 ft (~600–800 CFS) may scrape; above ~12 ft dangerous.</p>
+        <p><strong>Seasonal Changes:</strong></p>
+        <ul class="list-disc ml-8 space-y-1">
+          <li><strong>Spring (Mar–May):</strong> High, fast flows; cold water (50°F), fewer insects; watch flood advisories.</li>
+          <li><strong>Summer (Jul–Aug):</strong> Low, warm flows; paddle more; watch for mosquitoes, sun exposure.</li>
+          <li><strong>Fall (Sep–Oct):</strong> Variable flows; foliage; cooler water (60°F), minimal bugs; shorter daylight.</li>
+        </ul>
+        <p><strong>Forecast &amp; Check:</strong> Monitor USGS Waterdata and NOAA AHPS (Williamsport #01551500; West Milton downstream). The night before, ensure levels remain in safe range.</p>
+        <div class="mt-4 bg-white p-4 rounded-lg shadow">
+          <canvas id="waterChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Best Time of Year -->
+    <section id="season">
+      <h2 class="text-2xl font-semibold mb-4">Best Time of Year</h2>
+      <div class="bg-white p-6 rounded-lg shadow space-y-4">
+        <p><strong>Early Summer (June–Early July):</strong> Moderate flows, warm water (70s°F), fewer insects early, all amenities open &ndash; <em>Prime for your July 5 trip.</em></p>
+        <p><strong>Spring:</strong> Fast current, cold; dress for water temp; aim for May.</p>
+        <p><strong>Fall:</strong> Scenic foliage, cool air, minimal bugs; variable water.</p>
+        <p>Each season has its charm; July 5 lands in optimal early summer conditions with warm temperatures and stable flows.</p>
+      </div>
+    </section>
+
+    <!-- Hazards & Gotchas -->
+    <section id="hazards">
+      <h2 class="text-2xl font-semibold mb-4">Hazards &ldquo;Gotchas&rdquo;</h2>
+      <div class="bg-white p-6 rounded-lg shadow space-y-4">
+        <ul class="list-disc ml-8 space-y-2">
+          <li><strong>Strainers:</strong> Avoid downed trees near banks/island splits; travel mid-channel.</li>
+          <li><strong>Shallow Riffles &amp; Rocks:</strong> Hidden rocks in riffles; keep feet inside; scoot or step off if grounded.</li>
+          <li><strong>Former Dams:</strong> No portages needed; Muncy/Ordnance dam remnants downstream of take-out.</li>
+          <li><strong>Bridges:</strong> Stay clear of piers under Muncy railroad &amp; Montgomery highway bridges.</li>
+          <li><strong>Private Property:</strong> Use public sites only; Racetrack Island &ndash; no stopping.</li>
+          <li><strong>Power Boats:</strong> Occasional shallow johnboats/airboats &ndash; wear bright gear, yield right.</li>
+          <li><strong>Wildlife &amp; Plants:</strong> Snapping turtles, water snakes, poison ivy (leave-no-trace, Tecnu).</li>
+          <li><strong>Insects:</strong> Mosquitoes, deer flies, ticks; use repellent &amp; permethrin-treated clothing.</li>
+          <li><strong>Weather:</strong> Sudden storms/hail; get off water at first thunder, watch heat exhaustion &amp; sunburn.</li>
+          <li><strong>Isolation:</strong> 10-mile roadless stretch between Montoursville &amp; Muncy – be self-sufficient.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Shuttle Logistics -->
+    <section id="shuttle">
+      <h2 class="text-2xl font-semibold mb-4">Shuttle Logistics</h2>
+      <div class="bg-white p-6 rounded-lg shadow space-y-4">
+        <p>You have two vehicles: a kayak-hauling truck and a car. Recommended <strong>Option B</strong>:</p>
+        <ol class="list-decimal ml-8 space-y-2">
+          <li><strong>Meet at Montoursville:</strong> Unload kayaks from truck.</li>
+          <li>Drive both vehicles to Montgomery; park truck at take-out.</li>
+          <li>Return to Montoursville by car; launch by ~9:00 AM.</li>
+          <li>At finish, kayaks are on truck at Montgomery; load &amp; drive to retrieve car if needed.</li>
+        </ol>
+        <p><strong>Drive Time:</strong> ~25 min one-way via I-180/US-220 East &amp; PA-54.</p>
+        <p><strong>Contingency:</strong> Bail at Muncy Heritage Park (RM 26.7) &ndash; use rideshare or pre-place car.</p>
+      </div>
+    </section>
+
+    <!-- Emergency & Safety -->
+    <section id="safety">
+      <h2 class="text-2xl font-semibold mb-4">Emergency &amp; Safety Notes</h2>
+      <div class="bg-white p-6 rounded-lg shadow space-y-4">
+        <p><strong>Closest Hospitals:</strong> UPMC Williamsport (~6 mi), UPMC Muncy (~2 mi), Geisinger Muncy &amp; ECH Lewisburg (~15 mi).</p>
+        <p><strong>Cell Service:</strong> Generally good; possible dead spots mid-route. Carry whistles &amp; signals.</p>
+        <p><strong>Bail-Out Points:</strong> Muncy Heritage Park (RM 26.7), small exit at PA-405 bridge, then Montgomery.</p>
+        <p><strong>Weather Protocols:</strong> Thunder &ndash; shore ASAP; heat &ndash; hydrate/fan; cold &ndash; layer &amp; dry.
+        </p>
+        <p><strong>Leave No Trace:</strong> Pack out trash, respect wildlife &amp; private land, use proper bathroom practices.</p>
+      </div>
+    </section>
+
+    <!-- Packing Checklist -->
+    <section id="checklist">
+      <h2 class="text-2xl font-semibold mb-4">Packing Checklist</h2>
+      <div class="bg-white p-6 rounded-lg shadow grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Safety -->
+        <div>
+          <h3 class="font-semibold mb-2">Safety</h3>
+          <ul class="list-disc ml-5">
+            <li>PFD (worn)</li>
+            <li>First Aid Kit</li>
+            <li>Whistle & Throw Rope</li>
+            <li>Bilge Pump &amp; Knife</li>
+          </ul>
+        </div>
+        <!-- Hydration & Food -->
+        <div>
+          <h3 class="font-semibold mb-2">Hydration & Food</h3>
+          <ul class="list-disc ml-5">
+            <li>2L Water/person</li>
+            <li>Snacks &amp; Lunch</li>
+            <li>Electrolytes</li>
+          </ul>
+        </div>
+        <!-- Protection -->
+        <div>
+          <h3 class="font-semibold mb-2">Protection</h3>
+          <ul class="list-disc ml-5">
+            <li>Sunscreen &amp; Hat</li>
+            <li>Bug Spray</li>
+            <li>Rain Jacket</li>
+          </ul>
+        </div>
+        <!-- Clothing -->
+        <div>
+          <h3 class="font-semibold mb-2">Clothing</h3>
+          <ul class="list-disc ml-5">
+            <li>Quick-dry layers</li>
+            <li>Water Shoes</li>
+            <li>Extra Socks &amp; Clothes</li>
+          </ul>
+        </div>
+        <!-- Extras -->
+        <div>
+          <h3 class="font-semibold mb-2">Extras</h3>
+          <ul class="list-disc ml-5">
+            <li>Map or GPS & Compass</li>
+            <li>Phone in Dry Bag &amp; Battery Bank</li>
+            <li>Camera/Binoculars</li>
+            <li>Cash &amp; ID</li>
+          </ul>
+        </div>
+        <!-- Group Gear -->
+        <div>
+          <h3 class="font-semibold mb-2">Group Gear</h3>
+          <ul class="list-disc ml-5">
+            <li>Spare Paddle</li>
+            <li>Throw Bag</li>
+            <li>Tie-down Straps</li>
+            <li>Emergency Contact Plan</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Day-of Itinerary -->
+    <section id="itinerary">
+      <h2 class="text-2xl font-semibold mb-4">Day-of Itinerary</h2>
+      <div class="bg-white p-6 rounded-lg shadow space-y-4">
+        <ol class="list-decimal ml-8 space-y-2">
+          <li><strong>7:30 AM:</strong> Meet &amp; shuttle prep.</li>
+          <li><strong>9:00 AM:</strong> Launch at Montoursville.</li>
+          <li><strong>10:00 AM:</strong> Pass Racetrack Island &amp; Bald Eagle Ridge.</li>
+          <li><strong>11:00 AM:</strong> Approach Muncy Railroad Bridge.</li>
+          <li><strong>11:30 AM:</strong> Lunch at Muncy Heritage Park.</li>
+          <li><strong>12:15 PM:</strong> Resume paddling through islands.</li>
+          <li><strong>1:00–2:00 PM:</strong> Take out at Montgomery Access.</li>
+          <li><strong>2:00–3:00 PM:</strong> Load kayaks &amp; retrieve car.</li>
+          <li><strong>3:00–6:00 PM:</strong> Post-paddle celebration &amp; safe return.</li>
+        </ol>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-gray-200 text-center py-4">
+    <p>&copy; 2025 Kayak Adventures · Enjoy the journey!</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Water-level chart
+    const ctx = document.getElementById('waterChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['6 AM', '9 AM', '12 PM', '3 PM', '6 PM'],
+        datasets: [{
+          label: 'Gauge Height (ft)',
+          data: [2.0, 2.2, 2.5, 2.3, 2.1],
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { title: { display: true, text: 'Feet' } } }
+      }
+    });
+
+    // Three.js 3D river plane
+    const container = document.getElementById('threeContainer');
+    if(container) {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, container.clientWidth/container.clientHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
+      const geometry = new THREE.PlaneGeometry(10, 2, 32, 32);
+      const material = new THREE.MeshBasicMaterial({ color: 0x1ca3ec, wireframe: true });
+      const plane = new THREE.Mesh(geometry, material);
+      plane.rotation.x = -Math.PI/2;
+      scene.add(plane);
+      camera.position.set(0,5,5);
+      camera.lookAt(0,0,0);
+      function animate() { requestAnimationFrame(animate); plane.rotation.z += 0.001; renderer.render(scene, camera);} animate();
+    }
+  </script>
+</body>
+</html>
