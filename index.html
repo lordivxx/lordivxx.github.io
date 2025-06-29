@@ -4,202 +4,232 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personal Homepage</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    header {
-      background-color: #002855;
-      color: #ffcc33;
-      padding: 20px;
-      text-align: center;
-    }
-    nav {
-      background-color: #00457c;
-      display: flex;
-      justify-content: center;
-      padding: 10px 0;
-    }
-    nav a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 20px;
-      background: white;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-    section {
-      margin-bottom: 30px;
-    }
-    h2 {
-      color: #002855;
-    }
-    footer {
-      background-color: #002855;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+        header {
+            background-color: #002855;
+            color: #ffcc33;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #00457c;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        section {
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #002855;
+        }
+        footer {
+            background-color: #002855;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        #map {
+            height: 400px;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Chuck</h1>
-    <p>Innovating at the Intersection of Technology & the Great Outdoors</p>
-  </header>
-  <nav>
-    <a href="#profile">Profile</a>
-    <a href="#projects">Projects</a>
-    <a href="#interests">Interests</a>
-    <a href="#kayaking-trips">Kayaking</a>
-    <a href="#contact">Contact</a>
-    <a href="maps.html">Maps</a>
-    <a href="https://charlesforsyth.github.io/">Professional Website</a>
-  </nav>
-  <div class="container">
-    <!-- Professional Profile Section -->
-    <section id="profile">
-      <h2>Professional Profile</h2>
-      <p>Hello! I’m a Research Computing Director at UCR. My work bridges advanced computational research with innovative technologies, aiming to push the boundaries of modern computing in academia.</p>
-    </section>
-    
-    <!-- Projects & Publications Section -->
-    <section id="projects">
-      <h2>Projects & Publications</h2>
-      <p>Discover my latest projects that explore cutting-edge computing solutions, AI research, and data-driven innovations:</p>
-      <ul>
-        <li><strong>Research Computing Portal</strong> – A user-friendly management interface for HPC resources, researchers, and projects. <a href="research-manage.html" target="_blank">View Project</a></li>
-        <li><strong>Auto-Galaga Enhanced</strong> – An AI-driven version of the classic Galaga shooter featuring automated gameplay and top score tracking. <a href="galaga-top-score-ai.html" target="_blank">Play Now</a></li>
-        <li><strong>Auto-Galaga Enhanced</strong> – An AI-driven game with adjustments create with Gemini 2.5. <a href="rl-gem25.html" target="_blank">Play Now</a></li>
-        <li><strong>High-Performance Research Network</strong> – An interactive network map showcasing HPC connectivity and resources. <a href="hprn.html" target="_blank">Explore Map</a></li>
-        <li><strong>Dungeon Hero</strong> – A reinforcement learning environment set in a procedurally generated dungeon. <a href="rl-dungeon.html" target="_blank">Try It Out</a></li>
-        <li><strong>Live Hand Tracking</strong> – Webcam hand tracking. <a href="hand-track-web.html" target="_blank">Try It Out</a></li>
-        <li><strong>Text Encryptor & Decryptor</strong> - A simple web-based tool for encrypting and decrypting text using Caesar cipher. <a href="encrypt.html" target="_blank">Try It Out</a></li>
-        <li><strong>NASA Picture of the Day</strong> - Displays the daily Astronomy Picture of the Day from NASA's API. <a href="nspod.html" target="_blank">View APOD</a></li>
-        <li><strong>Trailblazer - Interactive Hiking & Camping Map</strong> - An interactive map with hiking trails, user location, and custom markers. <a href="map.html" target="_blank">Explore Map</a></li>
-        <li><strong>HAM Callsign Lookup Tool</strong> - Quickly find detailed amateur radio callsign information using a clean, dark-themed interface. <a href="callsign-lookup.html">View Tool</a></li>
-        <li><strong>LoRaWAN Visualization Tool</strong> - Interactively explore LoRaWAN sensor and gateway coverage on a dynamic map. <a href="lorawan_viz.html">View Tool</a></li>
-        <li><strong>MJ Plant Simulation</strong> – A comprehensive research report and simulation guide for cannabis growth, covering detailed factors from soil composition to light, environmental controls, and plant biochemistry.<a href="mj-wp2.html" target="_blank">View Project</a></li>
-        <li><strong>hpc-workflow-sim</strong> – A simulator for High-Performance Computing (HPC) workflows, allowing users to model, analyze, and optimize the execution of complex scientific applications on parallel computing systems.<a href="hpc-workflow-sim.html" target="_blank">View Project</a></li>
-      </ul>
-    </section>
-    
-    <!-- Kayaking Section -->
-    <section id="kayaking-trips">
-      <h2>Kayaking Trips</h2>
-      <style>
-        #trip-cards-container {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-        }
-        .trip-card {
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          padding: 10px;
-          width: 200px;
-        }
-      </style>
-      <div id="trip-cards-container"></div>
-      <script>
-        const trips = [
-          {
-            url: "kayak-trip-montoursville-montgomery.html",
-            title: "Montoursville to Montgomery",
-            date: "June 2025",
-            description: "A 14.5-mile trip on the West Branch of the Susquehanna River."
-          },
-          {
-            url: "kayak_trip_plan.html",
-            title: "Kayak Trip Plan",
-            date: "Future",
-            description: "A detailed plan for a future kayak trip."
-          },
-          {
-            url: "https://g.co/gemini/share/8f53bc12b352",
-            title: "Susquehanna Kayak Trip Planning",
-            date: "Future",
-            description: "A detailed plan for a future kayak trip."
-          },
-          {
-            url: "https://docs.google.com/document/d/1jTgWDun3nu58OsmLd6W_-K0UC8A_xT-wB-ulnPlOSPA/edit?usp=sharing",
-            title: "Pine Creek Kayak Trip Planning",
-            date: "Future",
-            description: "A detailed plan for a future kayak trip on Pine Creek."
-          },
-          {
-            url: "kayak-trip-petroglyphs.html",
-            title: "Susquehanna Petroglyph Trip",
-            date: "Future",
-            description: "A detailed plan for a future kayak trip to see the Susquehanna petroglyphs."
-          }
-        ];
+    <header>
+        <h1>Chuck</h1>
+        <p>Innovating at the Intersection of Technology & the Great Outdoors</p>
+    </header>
+    <nav>
+        <a href="#profile">Profile</a>
+        <a href="#projects">Projects</a>
+        <a href="#interests">Interests</a>
+        <a href="#kayaking-trips">Kayaking</a>
+        <a href="#contact">Contact</a>
+        <a href="maps.html">Maps</a>
+        <a href="https://charlesforsyth.github.io/">Professional Website</a>
+    </nav>
+    <div class="container">
+        <!-- Professional Profile Section -->
+        <section id="profile">
+            <h2>Professional Profile</h2>
+            <p>Hello! I’m a Research Computing Director at UCR. My work bridges advanced computational research with innovative technologies, aiming to push the boundaries of modern computing in academia.</p>
+        </section>
+        
+        <!-- Projects & Publications Section -->
+        <section id="projects">
+            <h2>Projects & Publications</h2>
+            <p>Discover my latest projects that explore cutting-edge computing solutions, AI research, and data-driven innovations:</p>
+            <ul>
+                <li><strong>Research Computing Portal</strong> – A user-friendly management interface for HPC resources, researchers, and projects. <a href="research-manage.html" target="_blank">View Project</a></li>
+                <li><strong>Auto-Galaga Enhanced</strong> – An AI-driven version of the classic Galaga shooter featuring automated gameplay and top score tracking. <a href="galaga-top-score-ai.html" target="_blank">Play Now</a></li>
+                <li><strong>Auto-Galaga Enhanced</strong> – An AI-driven game with adjustments create with Gemini 2.5. <a href="rl-gem25.html" target="_blank">Play Now</a></li>
+                <li><strong>High-Performance Research Network</strong> – An interactive network map showcasing HPC connectivity and resources. <a href="hprn.html" target="_blank">Explore Map</a></li>
+                <li><strong>Dungeon Hero</strong> – A reinforcement learning environment set in a procedurally generated dungeon. <a href="rl-dungeon.html" target="_blank">Try It Out</a></li>
+                <li><strong>Live Hand Tracking</strong> – Webcam hand tracking. <a href="hand-track-web.html" target="_blank">Try It Out</a></li>
+                <li><strong>Text Encryptor & Decryptor</strong> - A simple web-based tool for encrypting and decrypting text using Caesar cipher. <a href="encrypt.html" target="_blank">Try It Out</a></li>
+                <li><strong>NASA Picture of the Day</strong> - Displays the daily Astronomy Picture of the Day from NASA's API. <a href="nspod.html" target="_blank">View APOD</a></li>
+                <li><strong>Trailblazer - Interactive Hiking & Camping Map</strong> - An interactive map with hiking trails, user location, and custom markers. <a href="map.html" target="_blank">Explore Map</a></li>
+                <li><strong>HAM Callsign Lookup Tool</strong> - Quickly find detailed amateur radio callsign information using a clean, dark-themed interface. <a href="callsign-lookup.html">View Tool</a></li>
+                <li><strong>LoRaWAN Visualization Tool</strong> - Interactively explore LoRaWAN sensor and gateway coverage on a dynamic map. <a href="lorawan_viz.html">View Tool</a></li>
+                <li><strong>MJ Plant Simulation</strong> – A comprehensive research report and simulation guide for cannabis growth, covering detailed factors from soil composition to light, environmental controls, and plant biochemistry.<a href="mj-wp2.html" target="_blank">View Project</a></li>
+                <li><strong>hpc-workflow-sim</strong> – A simulator for High-Performance Computing (HPC) workflows, allowing users to model, analyze, and optimize the execution of complex scientific applications on parallel computing systems.<a href="hpc-workflow-sim.html" target="_blank">View Project</a></li>
+            </ul>
+        </section>
+        
+        <!-- Kayaking Section -->
+        <section id="kayaking-trips">
+            <h2>Kayaking Trips</h2>
+            <style>
+                #trip-cards-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+                .trip-card {
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    padding: 10px;
+                    width: 200px;
+                }
+            </style>
+            <div id="trip-cards-container"></div>
+            <script>
+                const trips = [
+                  {
+                    url: "kayak-trip-montoursville-montgomery.html",
+                    title: "Montoursville to Montgomery",
+                    date: "June 2025",
+                    description: "A 14.5-mile trip on the West Branch of the Susquehanna River.",
+                    coords: [41.17, -76.91]
+                  },
+                  {
+                    url: "kayak_trip_plan.html",
+                    title: "Kayak Trip Plan",
+                    date: "Future",
+                    description: "A detailed plan for a future kayak trip."
+                  },
+                  {
+                    url: "https://g.co/gemini/share/8f53bc12b352",
+                    title: "Susquehanna Kayak Trip Planning",
+                    date: "Future",
+                    description: "A detailed plan for a future kayak trip."
+                  },
+                  {
+                    url: "https://docs.google.com/document/d/1jTgWDun3nu58OsmLd6W_-K0UC8A_xT-wB-ulnPlOSPA/edit?usp=sharing",
+                    title: "Pine Creek Kayak Trip Planning",
+                    date: "Future",
+                    description: "A detailed plan for a future kayak trip on Pine Creek."
+                  },
+                  {
+                    url: "kayak-trip-petroglyphs.html",
+                    title: "Susquehanna Petroglyph Trip",
+                    date: "Future",
+                    description: "A detailed plan for a future kayak trip to see the Susquehanna petroglyphs.",
+                    coords: [39.92, -76.38]
+                  }
+                ];
 
-        const container = document.getElementById('trip-cards-container');
+                const container = document.getElementById('trip-cards-container');
+
+                trips.forEach(trip => {
+                    const card = document.createElement('div');
+                    card.className = 'trip-card';
+                    
+                    const title = document.createElement('h5');
+                    title.textContent = trip.title;
+                    
+                    const date = document.createElement('p');
+                    date.textContent = trip.date;
+
+                    const description = document.createElement('p');
+                    description.textContent = trip.description;
+                    
+                    const link = document.createElement('a');
+                    link.href = trip.url;
+                    link.textContent = "View Trip";
+                    
+                    card.appendChild(title);
+                    card.appendChild(date);
+                    card.appendChild(description);
+                    card.appendChild(link);
+                    
+                    container.appendChild(card);
+                });
+            </script>
+        </section>
+
+        <section id="kayak-map">
+            <h2>Kayak Trip Map</h2>
+            <div id="map"></div>
+        </section>
+        
+        <!-- Personal Interests Section -->
+        <section id="interests">
+            <h2>Personal Interests & Outdoor Adventures</h2>
+            <p>Beyond the lab, I have a deep love for the outdoors. Camping under the stars and exploring new trails are passions that fuel my creativity and innovation.</p>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact">
+            <h2>Get in Touch</h2>
+            <p>If you'd like to connect or learn more about my work, please reach out at <a href="mailto:chuck.forsyth@gmail.com">chuck.forsyth@gmail.com</a>.</p>
+        </section>
+    </div>
+    <footer>
+        <elevenlabs-convai agent-id="ymAHXqNkK4hiYUdKTbXq"></elevenlabs-convai><script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+    </footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        const map = L.map('map').setView([40.5, -76.8], 8);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
 
         trips.forEach(trip => {
-          const card = document.createElement('div');
-          card.className = 'trip-card';
-          
-          const title = document.createElement('h5');
-          title.textContent = trip.title;
-          
-          const date = document.createElement('p');
-          date.textContent = trip.date;
-
-          const description = document.createElement('p');
-          description.textContent = trip.description;
-          
-          const link = document.createElement('a');
-          link.href = trip.url;
-          link.textContent = "View Trip";
-          
-          card.appendChild(title);
-          card.appendChild(date);
-          card.appendChild(description);
-          card.appendChild(link);
-          
-          container.appendChild(card);
+            if (trip.coords) {
+                const marker = L.marker(trip.coords).addTo(map);
+                marker.bindPopup(`<b>${trip.title}</b><br><a href="${trip.url}">View Trip</a>`);
+            }
         });
-      </script>
-    </section>
-    
-    <!-- Personal Interests Section -->
-    <section id="interests">
-      <h2>Personal Interests & Outdoor Adventures</h2>
-      <p>Beyond the lab, I have a deep love for the outdoors. Camping under the stars and exploring new trails are passions that fuel my creativity and innovation.</p>
-    </section>
-    
-    <!-- Contact Section -->
-    <section id="contact">
-      <h2>Get in Touch</h2>
-      <p>If you'd like to connect or learn more about my work, please reach out at <a href="mailto:chuck.forsyth@gmail.com">chuck.forsyth@gmail.com</a>.</p>
-    </section>
-  </div>
-  <footer>
-    <elevenlabs-convai agent-id="ymAHXqNkK4hiYUdKTbXq"></elevenlabs-convai><script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
-  </footer>
-  <script>
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
-  </script>
+    </script>
 </body>
 </html>
