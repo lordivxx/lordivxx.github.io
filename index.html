@@ -134,6 +134,17 @@
         .kayak-button:hover {
           background-color: #005a9e;
         }
+        #trip-cards-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        .trip-card {
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          padding: 10px;
+          width: 200px;
+        }
       </style>
       .past-adventures ul {
           list-style-type: none;
@@ -156,16 +167,50 @@
 
           <div class="past-adventures">
             <h4>Past Adventures</h4>
-            <ul>
-              <!-- To add a new trip, copy the line below and update the href, title, and date. -->
-              <li>🛶 <a href="#">Example: Big Bear Lake - June 2025</a></li>
-            </ul>
+            <div id="trip-cards-container"></div>
           </div>
         </div>
         <div class="kayak-image">
           <img src="https://images.unsplash.com/photo-1524292334861-3c8871a46932?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Kayaking Adventure">
         </div>
       </div>
+      <script>
+        const trips = [
+          {
+            url: "kayak-trip-montoursville-montgomery.html",
+            title: "Montoursville to Montgomery",
+            date: "June 2025"
+          },
+          {
+            url: "kayak_trip_plan.html",
+            title: "Kayak Trip Plan",
+            date: "Future"
+          }
+        ];
+
+        const container = document.getElementById('trip-cards-container');
+
+        trips.forEach(trip => {
+          const card = document.createElement('div');
+          card.className = 'trip-card';
+          
+          const title = document.createElement('h5');
+          title.textContent = trip.title;
+          
+          const date = document.createElement('p');
+          date.textContent = trip.date;
+          
+          const link = document.createElement('a');
+          link.href = trip.url;
+          link.textContent = "View Trip";
+          
+          card.appendChild(title);
+          card.appendChild(date);
+          card.appendChild(link);
+          
+          container.appendChild(card);
+        });
+      </script>
     </section>
     
     <!-- Personal Interests Section -->
