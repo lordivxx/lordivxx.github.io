@@ -124,7 +124,10 @@
                     title: "Montoursville to Montgomery",
                     date: "June 2025",
                     description: "A 14.5-mile trip on the West Branch of the Susquehanna River.",
-                    coords: [41.17, -76.91]
+                    locations: [
+                        {name: "Montoursville", coords: [41.24, -76.91]},
+                        {name: "Montgomery", coords: [41.17, -76.91]}
+                    ]
                   },
                   {
                     url: "kayak_trip_plan.html",
@@ -143,14 +146,21 @@
                     title: "Pine Creek Kayak Trip Planning",
                     date: "Future",
                     description: "A detailed plan for a future kayak trip on Pine Creek.",
-                    pineCreek: true
+                    pineCreek: true,
+                    locations: [
+                        {name: "Ansonia", coords: [41.7464, -77.4283], link: "https://docs.google.com/document/d/1jTgWDun3nu58OsmLd6W_-K0UC8A_xT-wB-ulnPlOSPA/edit?usp=sharing"},
+                        {name: "Hoffman Campground", coords: [41.54638, -77.38958]},
+                        {name: "Black Walnut Bottom", coords: [41.44644, -77.51807], link: "https://docs.google.com/document/d/1jTgWDun3nu58OsmLd6W_-K0UC8A_xT-wB-ulnPlOSPA/edit?usp=sharing"}
+                    ]
                   },
                   {
                     url: "kayak-trip-petroglyphs.html",
                     title: "Susquehanna Petroglyph Trip",
                     date: "Future",
                     description: "A detailed plan for a future kayak trip to see the Susquehanna petroglyphs.",
-                    coords: [39.92, -76.38]
+                    locations: [
+                        {name: "Susquehanna Petroglyphs", coords: [39.92, -76.38], link: "kayak-trip-petroglyphs.html"}
+                    ]
                   }
                 ];
 
@@ -236,17 +246,15 @@
         map.fitBounds(polyline.getBounds());
 
         trips.forEach(trip => {
-            if (trip.coords) {
-                const marker = L.marker(trip.coords).addTo(map);
-                marker.bindPopup(`<b>${trip.title}</b><br><a href="${trip.url}">View Trip</a>`);
-            }
-            if (trip.pineCreek) {
-                const ansonia = L.marker([41.7464, -77.4283]).addTo(map);
-                ansonia.bindPopup(`<b>Ansonia</b><br>Put-in`);
-                const hoffman = L.marker([41.54638, -77.38958]).addTo(map);
-                hoffman.bindPopup(`<b>Hoffman Campground</b>`);
-                const blackwalnut = L.marker([41.44644, -77.51807]).addTo(map);
-                blackwalnut.bindPopup(`<b>Black Walnut Bottom</b><br>Take-out`);
+            if (trip.locations) {
+                trip.locations.forEach(location => {
+                    const marker = L.marker(location.coords).addTo(map);
+                    let popupContent = `<b>${location.name}</b>`;
+                    if (location.link) {
+                        popupContent += `<br><a href="${location.link}">View Trip</a>`;
+                    }
+                    marker.bindPopup(popupContent);
+                });
             }
         });
     </script>
