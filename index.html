@@ -135,11 +135,32 @@
           background-color: #005a9e;
         }
       </style>
+      .past-adventures ul {
+          list-style-type: none;
+          padding: 0;
+        }
+        .past-adventures li a {
+          text-decoration: none;
+          color: #005a9e;
+          font-weight: bold;
+        }
+        .past-adventures li a:hover {
+          text-decoration: underline;
+        }
+      </style>
       <div class="kayak-container">
         <div class="kayak-text">
           <h4>A Journey on the Water</h4>
-          <p>Paddling offers a unique perspective on the natural world—a blend of serene moments and physical challenges. This logbook is my way of capturing and sharing the beauty I've been fortunate to witness from the seat of my kayak. Click the button below to follow along on my adventures.</p>
-          <a href="https://gemini.google.com/share/8c139278e267" target="_blank" class="kayak-button">Explore My Kayaking Log</a>
+          <p>Paddling offers a unique perspective on the natural world—a blend of serene moments and physical challenges. This logbook is my way of capturing and sharing the beauty I've been fortunate to witness from the seat of my kayak. Click the button below to see my latest adventure.</p>
+          <a href="https://gemini.google.com/share/8c139278e267" target="_blank" class="kayak-button">View Latest Trip</a>
+
+          <div class="past-adventures">
+            <h4>Past Adventures</h4>
+            <ul>
+              <!-- To add a new trip, copy the line below and update the href, title, and date. -->
+              <li>🛶 <a href="#">Example: Big Bear Lake - June 2025</a></li>
+            </ul>
+          </div>
         </div>
         <div class="kayak-image">
           <img src="https://images.unsplash.com/photo-1524292334861-3c8871a46932?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Kayaking Adventure">
