@@ -61,6 +61,7 @@
     <a href="#profile">Profile</a>
     <a href="#projects">Projects</a>
     <a href="#interests">Interests</a>
+    <a href="#kayaking-trips">Kayaking</a>
     <a href="#contact">Contact</a>
     <a href="maps.html">Maps</a>
     <a href="https://charlesforsyth.github.io/">Professional Website</a>
@@ -93,10 +94,63 @@
       </ul>
     </section>
     
+    <!-- Kayaking Section -->
+    <section id="kayaking-trips">
+      <h2>Kayaking Trips</h2>
+      <style>
+        .kayak-container {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+        .kayak-text {
+          flex: 1;
+          min-width: 300px;
+          border-left: 3px solid #00457c;
+          padding-left: 20px;
+        }
+        .kayak-image {
+          flex: 1;
+          min-width: 300px;
+        }
+        .kayak-image img {
+          width: 100%;
+          height: auto;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .kayak-button {
+          display: inline-block; 
+          background-color: #00457c; 
+          color: white; 
+          padding: 10px 20px; 
+          text-decoration: none; 
+          border-radius: 5px; 
+          font-weight: bold; 
+          margin-top: 10px;
+          transition: background-color 0.3s ease;
+        }
+        .kayak-button:hover {
+          background-color: #005a9e;
+        }
+      </style>
+      <div class="kayak-container">
+        <div class="kayak-text">
+          <h4>A Journey on the Water</h4>
+          <p>Paddling offers a unique perspective on the natural world—a blend of serene moments and physical challenges. This logbook is my way of capturing and sharing the beauty I've been fortunate to witness from the seat of my kayak. Click the button below to follow along on my adventures.</p>
+          <a href="https://gemini.google.com/share/8c139278e267" target="_blank" class="kayak-button">Explore My Kayaking Log</a>
+        </div>
+        <div class="kayak-image">
+          <img src="https://images.unsplash.com/photo-1524292334861-3c8871a46932?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Kayaking Adventure">
+        </div>
+      </div>
+    </section>
+    
     <!-- Personal Interests Section -->
     <section id="interests">
       <h2>Personal Interests & Outdoor Adventures</h2>
-      <p>Beyond the lab, I have a deep love for the outdoors. Whether it's camping under the stars, kayaking serene rivers, or exploring new trails, nature fuels my creativity and passion for innovation.</p>
+      <p>Beyond the lab, I have a deep love for the outdoors. Camping under the stars and exploring new trails are passions that fuel my creativity and innovation.</p>
     </section>
     
     <!-- Contact Section -->
@@ -108,5 +162,17 @@
   <footer>
     <elevenlabs-convai agent-id="ymAHXqNkK4hiYUdKTbXq"></elevenlabs-convai><script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
   </footer>
+  <script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
 </body>
 </html>
