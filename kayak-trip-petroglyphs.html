@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Susquehanna River Petroglyphs Expedition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF6;
+            color: #36454F;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover {
+            color: #2E536F;
+            border-bottom-color: #2E536F;
+        }
+        .section-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-[#2E536F]">Petroglyph Float Plan</span>
+                </div>
+                <div class="hidden md:block">
+                    <div id="nav-menu" class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Overview</a>
+                        <a href="#gazetteer" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Gazetteer</a>
+                        <a href="#water" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Water</a>
+                        <a href="#logistics" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Logistics</a>
+                        <a href="#land-based" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Land-Based</a>
+                        <a href="#respect" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Respect</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="space-y-12">
+            
+            <section id="overview" class="pt-16 -mt-16">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-[#4A6B82]">Echoes in the Stone</h1>
+                    <p class="mt-2 text-lg text-gray-600">An expedition to the Susquehanna River Petroglyphs.</p>
+                </div>
+                <div class="my-8">
+                    <img src="images/Petro3.jpg" alt="Susquehanna Petroglyphs" class="rounded-xl shadow-lg mx-auto">
+                </div>
+                <div class="section-card rounded-xl p-6 shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4">A Lost World on the Lower Susquehanna</h2>
+                     <p class="mb-6 text-gray-700">The Lower Susquehanna River holds the highest concentration of Native American petroglyphs in the northeastern United States. These rock carvings, numbering over 1,000, are a direct window into the cosmology and science of the Algonquian-speaking Shenks Ferry people who inhabited this region between 800 and 1,200 years ago. Before hydroelectric dams transformed the landscape, this was a dynamic world of rapids and islands, a sacred space where a vibrant tradition of rock carving flourished.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <span class="text-4xl">🛶</span>
+                            <h3 class="font-bold text-lg mt-2">Mileage</h3>
+                            <p class="text-gray-600">~2-3 Miles Round Trip</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <span class="text-4xl">⏰</span>
+                            <h3 class="font-bold text-lg mt-2">Paddle Time</h3>
+                            <p class="text-gray-600">2-4 hours (including viewing)</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <span class="text-4xl">🗿</span>
+                            <h3 class="font-bold text-lg mt-2">Key Landmarks</h3>
+                            <p class="text-gray-600">Big & Little Indian Rock</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="gazetteer" class="pt-16 -mt-16">
+                <div class="section-card rounded-xl p-6 shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4">Gazetteer of the River's Rock Art</h2>
+                    <p class="mb-6 text-gray-700">An expedition requires understanding which sites can still be visited, which are lost, and which have been relocated.</p>
+                    
+                    <h3 class="text-xl font-bold mb-2 text-[#4A6B82]">The Safe Harbor Group (In-Situ)</h3>
+                    <p class="mb-4">The primary destination is the Safe Harbor Petroglyph group, just below the Safe Harbor Dam, with over 300 carvings on seven main rock islands.</p>
+                    <ul class="space-y-2 mb-6">
+                        <li><strong>Big Indian Rock:</strong> A large, domed island (approx. 39°55′15"N 76°23′05"W) with carvings of horned human-like figures, thunderbirds, and animal tracks.</li>
+                        <li><strong>Little Indian Rock:</strong> Upstream from Big Indian, this is the crown jewel with ~150 carvings, including the famous solar calendar composed of serpent symbols.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-bold mb-2 text-[#4A6B82]">The Lost Sites</h3>
+                    <p class="mb-4">The construction of the Safe Harbor and Conowingo dams in the early 20th century submerged a priceless cultural record, including the abstract carvings of Walnut Island and the geometric designs of the Bald Friar Group in Maryland.</p>
+
+                    <h3 class="text-xl font-bold mb-2 text-[#4A6B82]">Salvaged Petroglyphs</h3>
+                    <p class="mb-4">Before the dams, salvage operations removed some carvings. You can view these artifacts and replicas at several institutions:</p>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="text-left py-2 px-4">Institution</th>
+                                    <th class="text-left py-2 px-4">Location</th>
+                                    <th class="text-left py-2 px-4">What's On Display</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="py-2 px-4">State Museum of Pennsylvania</td>
+                                    <td class="py-2 px-4">Harrisburg, PA</td>
+                                    <td class="py-2 px-4">Salvaged petroglyphs from Walnut Island & Cresswell Rock.</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 px-4">Blue Rock Heritage Center</td>
+                                    <td class="py-2 px-4">Washington Boro, PA</td>
+                                    <td class="py-2 px-4">Two salvaged rocks from Walnut Island.</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 px-4">Conestoga Area Historical Society</td>
+                                    <td class="py-2 px-4">Conestoga, PA</td>
+                                    <td class="py-2 px-4">Four salvaged rocks from Walnut Island & Cresswell Rock.</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4">Indian Steps Museum</td>
+                                    <td class="py-2 px-4">Airville, PA</td>
+                                    <td class="py-2 px-4">Small plaster models of Little and Big Indian Rock.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="water" class="pt-16 -mt-16">
+                <div class="section-card rounded-xl p-6 shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4">Decoding the River</h2>
+                    <p class="mb-6 text-gray-700">Water levels are artificially controlled by the Safe Harbor Dam and are the most critical factor for a safe trip. Levels can change by several feet in minutes. Diligent, pre-trip research is essential.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <p class="mb-4">Monitor the official dam operator site <a href="https://safewaters.com/facility/safe-harbor" target="_blank" class="text-blue-600 hover:underline font-semibold">SafeWaters.com</a> and the <a href="https://water.noaa.gov/gauges/harp1" target="_blank" class="text-blue-600 hover:underline font-semibold">USGS Gauge at Harrisburg (HARP1)</a>.</p>
+                            <ul class="space-y-3">
+                                <li class="flex items-start"><span class="font-bold text-green-600 w-40">Ideal (&lt; 4.0 ft):</span><span>Optimal viewing. More rocks exposed, manageable currents.</span></li>
+                                <li class="flex items-start"><span class="font-bold text-yellow-600 w-40">Caution (4.0-5.0 ft):</span><span>For experienced paddlers. Stronger currents, some carvings submerged.</span></li>
+                                <li class="flex items-start"><span class="font-bold text-orange-600 w-40">Experts Only (5.0-7.0 ft):</span><span>Strong, erratic currents. Most carvings submerged. Not for viewing.</span></li>
+                                <li class="flex items-start"><span class="font-bold text-red-600 w-40">Hazardous (&gt; 7.0 ft):</span><span>Dangerous, flood-stage conditions. DO NOT PADDLE.</span></li>
+                            </ul>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="waterLevelChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="logistics" class="pt-16 -mt-16">
+                <div class="section-card rounded-xl p-6 shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4">Launch Sites & Logistics</h2>
+                    <p class="mb-6 text-gray-700">The best viewing occurs in early morning or late evening light. The low sun angle makes the shallow carvings "pop." Avoid direct overhead light.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Primary Launch</h3>
+                            <p><strong>Conestoga River Park</strong> (River Road, Conestoga, PA). Has ample parking. It's a calm 0.5-mile paddle down the Conestoga River to the Susquehanna, then another 0.5-mile paddle to the rocks.</p>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Alternative Launch</h3>
+                            <p><strong>Pequea Boat Launch</strong> (Route 324). A good option for motorboats or those wanting a longer trip. Requires a 2-mile upstream paddle to reach the petroglyphs.</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 text-blue-800 rounded-r-lg">
+                        <h4 class="font-bold">Guided Tours</h4>
+                        <p class="text-sm">For a safer, more informative experience, consider a guided tour. Paul Nevin, Uncharted Lancaster, and Shank's Mare Outfitters are all reputable local guides.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="land-based" class="pt-16 -mt-16">
+                <div class="section-card rounded-xl p-6 shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4">Land-Based Approach</h2>
+                    <p class="mb-6 text-gray-700">You don't have to get on the water to experience the area.</p>
+                    <ul class="space-y-3">
+                        <li><strong class="text-[#4A6B82]">Direct Views:</strong> The <strong>Safe Harbor Trestle Bridge</strong> on the Enola Low Grade Rail Trail offers stunning, direct views down onto the petroglyph islands. Access requires a ~5-mile (one-way) hike or bike ride from the Turkey Hill Overlook Trailhead.</li>
+                        <li><strong class="text-[#4A6B82]">Panoramic Views:</strong> The <strong>Turkey Hill Overlook Trail</strong> provides spectacular vistas of the river gorge where the petroglyphs are located, but you cannot see the carvings themselves from here.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="respect" class="pt-16 -mt-16">
+                <div class="section-card rounded-xl p-6 shadow-lg bg-red-50 border-red-500 border-2">
+                    <h2 class="text-2xl font-bold mb-4 text-red-800">The Explorer's Ethos: Principles of Respectful Visitation</h2>
+                    <p class="mb-6 text-red-700">The petroglyphs have survived for a millennium. Their continued existence depends on your actions. Adherence to a strict preservation ethic is a requirement for anyone who visits these sacred and fragile sites.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start"><span class="text-3xl mr-3">🚫</span><div><strong class="text-lg">DO NOT WALK ON THE PETROGLYPHS.</strong> The carvings are shallow and abrasion from footwear erodes them. If you must go onto the rocks, remove your shoes.</div></li>
+                        <li class="flex items-start"><span class="text-3xl mr-3">🚫</span><div><strong class="text-lg">DO NOT TOUCH THE PETROGLYPHS.</strong> Oils from your hands cause permanent discoloration and accelerate deterioration.</div></li>
+                        <li class="flex items-start"><span class="text-3xl mr-3">🚫</span><div><strong class="text-lg">DO NOT MAKE RUBBINGS, CHALK, OR PAINT THE CARVINGS.</strong> These actions are vandalism and cause irreversible damage.</div></li>
+                    </ul>
+                    <div class="mt-6 p-4 bg-green-50 border-l-4 border-green-400 text-green-800 rounded-r-lg">
+                        <h4 class="font-bold">Best Practices for Viewing</h4>
+                        <p class="text-sm">Gently splash water on the carvings to make them stand out. Use low-angle morning or evening light. A camera's LCD screen can also help reveal details.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="bg-white mt-12">
+        <div class="container mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+            <p>This float plan is for informational purposes only. River conditions can change rapidly and without warning. Paddle at your own risk. Always check current conditions and wear a PFD.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            if(targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    const waterLevelCtx = document.getElementById('waterLevelChart');
+    if (waterLevelCtx) {
+        new Chart(waterLevelCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Ideal', 'Caution', 'Experts Only', 'Hazardous'],
+                datasets: [{
+                    label: 'Harrisburg Gauge Reading (ft)',
+                    data: [4.0, 5.0, 7.0, 9.0], // Using upper limit for visualization
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Recommended Action by Water Level'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'USGS Gauge at Harrisburg (ft)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
