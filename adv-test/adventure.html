@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiking and Kayaking Adventures</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2em;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 1em;
+            margin-bottom: 2em;
+        }
+        img, video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1em;
+        }
+        .gallery img {
+            max-width: 48%;
+        }
+        .music-button-container {
+            position: fixed;
+            top: 1em;
+            right: 1em;
+            z-index: 1000;
+        }
+        .music-button {
+            padding: 0.5em 1em;
+            font-size: 0.8em;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-button-container">
+        <audio id="background-music" src="background_music.wav" loop></audio>
+        <button class="music-button" onclick="toggleMusic()">Play Music</button>
+    </div>
+    <div class="container">
+        <h1>Hiking and Kayaking Adventures</h1>
+
+        <div class="card">
+            <h2>The Call of the Wild</h2>
+            <p>The sun was just beginning to peek over the horizon as Alex packed the last of the gear. Today was the day for a grand adventure, a journey into the heart of nature. The plan was simple: a morning hike to the summit of Eagle Peak, followed by an afternoon kayaking on the crystal-clear waters of Lake Serenity.</p>
+            <p>The hike was invigorating. The trail wound through a forest of towering pines, the air crisp and clean. Alex paused to take in the view from a scenic overlook, the valley stretching out below like a patchwork quilt. Reaching the summit was a triumphant moment, the world spreading out in a breathtaking panorama.</p>
+            <p>After a well-deserved rest, it was time for the lake. The kayak sliced through the water, each paddle stroke a silent conversation with the gentle ripples. The only sounds were the birds singing in the trees and the soft lapping of the water against the hull. It was a perfect day, a reminder of the simple joys of being in nature.</p>
+        </div>
+
+        <div class="card">
+            <h2>Photo Gallery</h2>
+            <div class="gallery">
+                <img src="A_scenic_hiking_trail_in_the_mountains_with_a_clea_20250826_143922_0.png" alt="A scenic hiking trail">
+                <img src="A_hiker_resting_on_a_mountain_peak_looking_out_at__20250826_144447_0.png" alt="A hiker on a mountain peak">
+                <img src="A_person_kayaking_on_a_calm_lake_surrounded_by_tre_20250826_143944_0.png" alt="A person kayaking on a calm lake">
+                <img src="A_kayak_pulled_up_on_a_sandy_beach_with_a_calm_oce_20250826_144502_0.png" alt="A kayak on a sandy beach">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Adventure Video</h2>
+            <video controls>
+                <source src="adventure_video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        const music = document.getElementById('background-music');
+        const musicButton = document.querySelector('.music-button');
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                musicButton.textContent = 'Pause Music';
+            } else {
+                music.pause();
+                musicButton.textContent = 'Play Music';
+            }
+        }
+    </script>
+</body>
+</html>
