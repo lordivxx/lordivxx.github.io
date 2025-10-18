@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Canvas</title>
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --border-color: #ddd;
+            --primary-color: #3498DB;
+            --danger-color: #E74C3C;
+            --success-color: #2ECC71;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            margin: 0;
+            height: 100vh;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: #fff;
+            border-right: 1px solid var(--border-color);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s;
+        }
+        #node-list, #config-panel {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        #sidebar h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .add-node-btn, .sidebar-btn {
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: #fff;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+        .add-node-btn:hover {
+            background-color: #eef;
+        }
+        #clear-canvas {
+            margin-top: auto;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        #clear-canvas:hover {
+            background-color: #f1b0b7;
+        }
+        #main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-height: 100vh;
+            box-sizing: border-box;
+        }
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #controls h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #444;
+        }
+        #controls button {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: #fff;
+            margin-left: 10px;
+            transition: all 0.2s;
+        }
+        #controls button:hover {
+            border-color: #aaa;
+            background-color: #f9f9f9;
+        }
+        #run-workflow {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+        #run-workflow:hover {
+            background-color: #27ae60;
+            border-color: #27ae60;
+        }
+        #canvas-container {
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+        canvas {
+            display: block;
+        }
+        #output-area {
+            border: 1px solid var(--border-color);
+            background-color: #fff;
+            padding: 15px;
+            flex-grow: 1;
+            overflow-y: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        #output-area h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        #output-content {
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #config-panel {
+            background-color: #f9f9f9;
+        }
+        .config-item {
+            margin-bottom: 15px;
+        }
+        .config-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .config-item input, .config-item textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        #config-save {
+            margin-top: auto;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        #config-back {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div id="node-list">
+            <h3>Nodes</h3>
+            <button class="add-node-btn" data-node-type="Start">Start</button>
+            <button class="add-node-btn" data-node-type="UserInput">User Input</button>
+            <button class="add-node-btn" data-node-type="Text">Display Text</button>
+            <button class="add-node-btn" data-node-type="Image">Show Image</button>
+            <button class="add-node-btn" data-node-type="Sound">Play Sound</button>
+            <button class="add-node-btn" data-node-type="Delay">Delay</button>
+            <button class="add-node-btn" data-node-type="Condition">Condition</button>
+            <hr>
+            <button id="clear-canvas">Clear Canvas</button>
+        </div>
+        <div id="config-panel" class="hidden">
+            <h3 id="config-title">Node Settings</h3>
+            <div id="config-content"></div>
+            <button id="config-save">Save</button>
+            <button id="config-back">Back</button>
+        </div>
+    </div>
+    <div id="main-content">
+        <div id="controls">
+            <h1>Interactive Workflow Machine</h1>
+            <div>
+                <button id="save-workflow">Save</button>
+                <button id="load-workflow">Load</button>
+                <button id="run-workflow">Run Workflow</button>
+                <input type="file" id="load-input" style="display: none;" accept=".json">
+            </div>
+        </div>
+        <div id="canvas-container">
+            <canvas id="canvas" width="1000" height="600"></canvas>
+        </div>
+        <div id="output-area">
+            <h3>Output</h3>
+            <div id="output-content"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
